@@ -31,6 +31,27 @@
             android:hint="Robot IP"
             android:inputType="textPersonName" />
 
+        <Button
+            android:id="@+id/connect_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClickConnectButton"
+            android:text="Connect" />
+
+        <Button
+            android:id="@+id/disconnect_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClickDisconnectButton"
+            android:text="Disconnect" />
+
+        <Button
+            android:id="@+id/start_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClickStartButton"
+            android:text="Start" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

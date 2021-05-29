@@ -28,7 +28,7 @@ public class TcpIpConnection {
 
             in = socket.getInputStream();
         }
-        catch (Exception e){
+        catch (Exception e) {
             Log.d("exceptEnric", e.toString());
         }
     }
@@ -43,19 +43,18 @@ public class TcpIpConnection {
                 if (num_read_bytes == 4) {
 
                     int len = ByteBuffer.wrap(package_size).getInt();
-                    Log.d("info_package", "len: " + String.valueOf(len));
+                    //Log.d("info_package", "len: " + String.valueOf(len));
 
                     int type = in.read();
-
-                    Log.d("info_package", "type: " + String.valueOf(type));
+                    //Log.d("info_package", "type: " + String.valueOf(type));
 
                     int current_len = len - 4 - 1;
 
                     byte body[] = new byte[current_len]; // body
 
-                    int aux = in.read(body, 0, current_len);
+                    int num_bytes_read = in.read(body, 0, current_len);
 
-                    Log.d("info_package", "body read bytes: " + String.valueOf(aux));
+                    //Log.d("info_package", "body read bytes: " + String.valueOf(aux));
                 }
             } else {
                 Log.d("info_package", "not available packages");
@@ -74,4 +73,6 @@ public class TcpIpConnection {
             Log.d("exceptEnric", e.toString());
         }
     }
+
+
 }
