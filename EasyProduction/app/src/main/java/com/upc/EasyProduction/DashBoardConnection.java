@@ -1,7 +1,5 @@
 package com.upc.EasyProduction;
 
-import android.util.Log;
-
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -26,12 +24,14 @@ public class DashBoardConnection {
             out = new PrintWriter(socket.getOutputStream(), true);
         }
         catch (Exception e){
-            Log.d("exceptEnric", e.toString());
+            e.printStackTrace();
         }
     }
 
+    // in theory println adds \n in the end of the string
+
     public void play(){
-        out.println("play"); // in theory println adds \n in the end of the string
+        out.println("play");
     }
 
     public void pause(){

@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private NetworkService networkService;
     private boolean bound = false; // bounded to service?
 
+    private String robotIP;
+
     private Button connectButton;
     private Button disconnectButton;
     private Button startButton;
@@ -32,9 +34,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*MediaPlayer player = MediaPlayer.create(this, Settings.System.DEFAULT_RINGTONE_URI);
-        player.setLooping(true);
-        player.start();*/
+        /*(new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                MediaPlayer player = MediaPlayer.create(MainActivity.this, Settings.System.DEFAULT_RINGTONE_URI);
+                player.setLooping(true);
+                player.start();
+            }
+        }).start();*/
     }
 
     @Override
@@ -49,20 +57,23 @@ public class MainActivity extends AppCompatActivity {
         ipText = findViewById(R.id.ip_robot);
 
         if (!connectionServiceStarted){
+            ipText.setEnabled(true);
             connectButton.setEnabled(true);
             disconnectButton.setEnabled(false);
             startButton.setEnabled(false);
         }
         else{
+            ipText.setEnabled(false);
             connectButton.setEnabled(false);
             disconnectButton.setEnabled(true);
             startButton.setEnabled(true);
         }
     }
 
+
     public void onClickConnectButton(View v){
 
-        String robotIP = ipText.getText().toString();
+        robotIP = ipText.getText().toString();
 
         // start network service
 
@@ -76,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         // do not mind if there are not any activity bound or if app is inactive
 
         if (!bound){
-            bindService(i, connection, Context.BIND_AUTO_CREATE); // asynchronous!!!!
+            doBindService(); // asynchronous!!!!
         }
 
         // wait until bound in another thread, avoiding blocking this one which has to execute the binding
@@ -84,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         (new Thread(){
             @Override
             public void run() {
-                while (!bound);
+                while (networkService == null);
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -95,27 +106,43 @@ public class MainActivity extends AppCompatActivity {
                             // The Classname. this syntax is used to refer to an outer class instance when you are using nested classes
                         }
                         else{
+                            ipText.setEnabled(false);
                             connectButton.setEnabled(false);
                             disconnectButton.setEnabled(true);
                             startButton.setEnabled(true);
                         }
+                        doUnbindService();
                     }
                 });
             }
         }).start();
     }
 
+    //https://stackoverflow.com/questions/22079909/android-java-lang-illegalargumentexception-service-not-registered
+
+    public void doBindService() {
+        bound = bindService(new Intent(this, NetworkService.class), connection, Context.BIND_AUTO_CREATE);
+    }
+
+    public void doUnbindService() {
+        if (bound) {
+            unbindService(connection);
+            bound = false;
+        }
+    }
+
     public void onClickStartButton(View v){
         Intent i = new Intent(this, RobotStateActivity.class);
+        i.putExtra("ip", robotIP);
         // our activity inherits from context
         startActivity(i);
     }
 
     public void onClickDisconnectButton(View v){
-        unbindService(connection);
-        bound = false;
+
         stopService(new Intent(this, NetworkService.class));
 
+        ipText.setEnabled(true);
         connectButton.setEnabled(true);
         disconnectButton.setEnabled(false);
         startButton.setEnabled(false);
@@ -129,14 +156,13 @@ public class MainActivity extends AppCompatActivity {
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             NetworkService.MyBinder binder = (NetworkService.MyBinder) service;
             networkService = binder.getService();
-            bound = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
             // The Android system calls this when the connection to the service is unexpectedly lost,
             // such as when the service has crashed or has been killed. This is not called when the client unbinds.
-            bound = false;
+            networkService = null;
         }
     };
 
