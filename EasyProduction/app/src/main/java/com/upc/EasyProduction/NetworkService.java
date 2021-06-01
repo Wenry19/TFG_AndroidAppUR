@@ -30,7 +30,9 @@ public class NetworkService extends Service {
 
     private MyThread tcpIpThread;
 
-    private MediaPlayer player;
+    private boolean triedToConnect = false;
+
+    //private MediaPlayer player;
 
     public class MyBinder extends Binder {
         NetworkService getService() {
@@ -64,11 +66,11 @@ public class NetworkService extends Service {
                 .build();
         startForeground(1, notification);
 
-        player = MediaPlayer.create(this, Settings.System.DEFAULT_RINGTONE_URI);
+        /*player = MediaPlayer.create(this, Settings.System.DEFAULT_RINGTONE_URI);
         player.setLooping(true);
-        player.start();
+        player.start();*/
         
-        //startTcpIpThread();
+        startTcpIpThread();
 
         return START_NOT_STICKY;
     }
@@ -95,11 +97,11 @@ public class NetworkService extends Service {
     public void onDestroy() {
         super.onDestroy();
         toastMessage("Network Service Destroyed");
-        player.stop();
+        //player.stop();
 
         // kill threads
 
-        //tcpIpThread.myStop();
+        tcpIpThread.myStop();
     }
 
     // https://stackoverflow.com/questions/38239291/showing-a-toast-notification-from-a-service
@@ -123,7 +125,10 @@ public class NetworkService extends Service {
 
                 tcpIp = new TcpIpConnection(ip);
 
-                while(!isStopped()){
+                tcpIp.connect();
+                triedToConnect = true; // now we can check in MainActivity if the socket connection was successful
+
+                while(!isStopped() && tcpIp.isSocketConnected()){
 
                     // receive and decode info packages of robot state
                     // when necessary notifies user
@@ -137,8 +142,16 @@ public class NetworkService extends Service {
 
     // public methods for clients
 
-    public boolean isConnected() {
-        return true;
+    public boolean isSocketConnected() {
+        return tcpIp.isSocketConnected();
+    }
+
+    public boolean doWeTryToConnect(){
+        return triedToConnect;
+    }
+
+    public String getIP(){
+        return ip;
     }
 
 

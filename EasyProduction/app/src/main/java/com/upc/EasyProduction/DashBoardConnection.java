@@ -1,5 +1,9 @@
 package com.upc.EasyProduction;
 
+import android.widget.Toast;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -9,8 +13,13 @@ public class DashBoardConnection {
 
     private final int portNumber = 29999; // DashBoard Connection
 
+    // https://docs.oracle.com/javase/tutorial/networking/sockets/examples/EchoClient.java
     private Socket socket;
     private PrintWriter out; // to be able to sent encoded strings
+
+    //private BufferedReader in;
+
+    private boolean socket_connected = false;
 
 
     DashBoardConnection(String robotIP){
@@ -21,11 +30,20 @@ public class DashBoardConnection {
         try {
             socket = new Socket(hostname, portNumber);
 
+            //in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
             out = new PrintWriter(socket.getOutputStream(), true);
+
+            socket_connected = true;
         }
         catch (Exception e){
             e.printStackTrace();
+            socket_connected = false;
         }
+    }
+
+    public boolean isSocketConnected(){
+        return socket_connected;
     }
 
     // in theory println adds \n in the end of the string

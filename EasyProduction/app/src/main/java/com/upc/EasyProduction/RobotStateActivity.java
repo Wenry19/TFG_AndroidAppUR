@@ -32,6 +32,7 @@ public class RobotStateActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         robotIP = i.getStringExtra("ip");
+        // check ip again?
     }
 
     @Override
@@ -65,9 +66,9 @@ public class RobotStateActivity extends AppCompatActivity {
         if (bound) {
             unbindService(connection);
             bound = false;
+            networkService = null;
         }
     }
-
 
 
     public void onClickPlayButton(View v){
@@ -77,7 +78,12 @@ public class RobotStateActivity extends AppCompatActivity {
             public void run() {
                 super.run();
                 db.connect();
-                db.play();
+                if (db.isSocketConnected()) {
+                    db.play();
+                }
+                else{
+                    //...
+                }
             }
         }).start();
 
@@ -90,7 +96,12 @@ public class RobotStateActivity extends AppCompatActivity {
             public void run() {
                 super.run();
                 db.connect();
-                db.pause();
+                if (db.isSocketConnected()) {
+                    db.pause();
+                }
+                else{
+
+                }
             }
         }).start();
 
@@ -103,7 +114,12 @@ public class RobotStateActivity extends AppCompatActivity {
             public void run() {
                 super.run();
                 db.connect();
-                db.stop();
+                if (db.isSocketConnected()) {
+                    db.stop();
+                }
+                else{
+
+                }
             }
         }).start();
 
@@ -112,8 +128,6 @@ public class RobotStateActivity extends AppCompatActivity {
     public void onClickMsgButton(View v){
 
     }
-
-
 
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection connection = new ServiceConnection() {

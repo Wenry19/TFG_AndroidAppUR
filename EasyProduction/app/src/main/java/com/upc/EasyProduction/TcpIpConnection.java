@@ -17,6 +17,8 @@ public class TcpIpConnection {
     private Socket socket;
     private InputStream in;
 
+    private boolean socket_connected = false;
+
 
     TcpIpConnection(String robotIP){
         hostname = robotIP;
@@ -27,10 +29,17 @@ public class TcpIpConnection {
             socket = new Socket(hostname, portNumber);
 
             in = socket.getInputStream();
+
+            socket_connected = true;
         }
         catch (Exception e) {
-            Log.d("exceptEnric", e.toString());
+            e.printStackTrace();
+            socket_connected = false;
         }
+    }
+
+    public boolean isSocketConnected(){
+        return socket_connected;
     }
 
     private void receivePackage(){
@@ -38,7 +47,7 @@ public class TcpIpConnection {
 
             byte package_size[] = new byte[4]; // int
 
-            if (in.available() > 0) {
+            if (socket_connected && in.available() > 0) {
                 int num_read_bytes = in.read(package_size, 0, 4);
                 if (num_read_bytes == 4) {
 
@@ -61,18 +70,16 @@ public class TcpIpConnection {
             }
         }
         catch (UnknownHostException e){
-            System.out.println(e.toString());
-            Log.d("exceptEnric", e.toString());
+            e.printStackTrace();
+            socket_connected = false;
         }
         catch (IOException e){
-            System.out.println(e.toString());
-            Log.d("exceptEnric", e.toString());
+            e.printStackTrace();
+            socket_connected = false;
         }
         catch (Exception e){
-            System.out.println(e.toString());
-            Log.d("exceptEnric", e.toString());
+            e.printStackTrace();
+            socket_connected = false;
         }
     }
-
-
 }

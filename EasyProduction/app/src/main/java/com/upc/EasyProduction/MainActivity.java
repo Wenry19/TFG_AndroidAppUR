@@ -47,20 +47,38 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        boolean connectionServiceStarted = isMyServiceRunning(NetworkService.class);
+        boolean NetworkServiceStarted = isMyServiceRunning(NetworkService.class);
 
         connectButton = findViewById(R.id.connect_button);
         disconnectButton = findViewById(R.id.disconnect_button);
         startButton = findViewById(R.id.start_button);
         ipText = findViewById(R.id.ip_robot);
 
-        if (!connectionServiceStarted){
+        if (!NetworkServiceStarted){
             ipText.setEnabled(true);
             connectButton.setEnabled(true);
             disconnectButton.setEnabled(false);
             startButton.setEnabled(false);
         }
         else{
+            if (!bound) {
+                doBindService();
+            }
+            (new Thread(){
+                @Override
+                public void run() {
+                    while (networkService == null);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ipText.setText(networkService.getIP());
+                            doUnbindService(); // important!!
+                        }
+                    });
+                }
+            }).start();
+
             ipText.setEnabled(false);
             connectButton.setEnabled(false);
             disconnectButton.setEnabled(true);
@@ -93,15 +111,23 @@ public class MainActivity extends AppCompatActivity {
         (new Thread(){
             @Override
             public void run() {
+
+                // wait bind
                 while (networkService == null);
+
+                // wait socket try to connect
+                while (!networkService.doWeTryToConnect());
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         // make sure that connection succeed
-                        if (!networkService.isConnected()){
+                        if (!networkService.isSocketConnected()){
                             Toast.makeText(MainActivity.this, "Unable to connect", Toast.LENGTH_LONG).show();
                             // The Classname. this syntax is used to refer to an outer class instance when you are using nested classes
+                            // unbind and stop service!!
+                            doUnbindService();
+                            stopService(new Intent(MainActivity.this, NetworkService.class));
                         }
                         else{
                             ipText.setEnabled(false);
@@ -126,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
         if (bound) {
             unbindService(connection);
             bound = false;
+            networkService = null;
         }
     }
 
