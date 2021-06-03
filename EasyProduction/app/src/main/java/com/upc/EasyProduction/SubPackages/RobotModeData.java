@@ -11,10 +11,14 @@ public class RobotModeData extends SubPackage{
     private int robotMode = 0;
     private int controlMode = 0;
 
+    private String robotModeStr = "Unknown";
+    private String controlModeStr = "Unknown";
+
+
     // redundant with robot Mode?!
     //private boolean isRealRobotConnected;
     //private boolean isRealRobotEnabled;
-    //private boolean isRoboPowerOn;
+    //private boolean isRobotPowerOn;
 
     public RobotModeData(){
         this.type = 0;
@@ -32,6 +36,30 @@ public class RobotModeData extends SubPackage{
 
         robotMode = body[15];
         controlMode = body[16];
+
+        updateStrings();
+    }
+
+    public void updateStrings(){
+
+        if (robotMode == -1) robotModeStr = "NO_CONTROLLER";
+        else if (robotMode == 0) robotModeStr = "DISCONNECTED";
+        else if (robotMode == 1) robotModeStr = "CONFIRM_SAFETY";
+        else if (robotMode == 2) robotModeStr = "BOOTING";
+        else if (robotMode == 3) robotModeStr = "POWER_OFF";
+        else if (robotMode == 4) robotModeStr = "POWER_ON";
+        else if (robotMode == 5) robotModeStr = "IDLE";
+        else if (robotMode == 6) robotModeStr = "BACKDRIVE";
+        else if (robotMode == 7) robotModeStr = "RUNNING";
+        else if (robotMode == 8) robotModeStr = "UPDATING_FIRMWARE";
+        else robotModeStr = "Unknown";
+
+        if (controlMode == 0) controlModeStr = "POSITION";
+        else if (controlMode == 1) controlModeStr = "TEACH";
+        else if (controlMode == 2) controlModeStr = "FORCE";
+        else if (controlMode == 3) controlModeStr = "TORQUE";
+        else controlModeStr = "Unknown";
+
     }
 
     public boolean getIsEmergencyStopped(){
@@ -50,11 +78,11 @@ public class RobotModeData extends SubPackage{
         return isProgramPaused;
     }
 
-    public int getRobotMode(){
-        return robotMode;
+    public String getRobotModeStr(){
+        return robotModeStr;
     }
 
-    public int getControlMode(){
-        return controlMode;
+    public String getControlModeStr(){
+        return controlModeStr;
     }
 }

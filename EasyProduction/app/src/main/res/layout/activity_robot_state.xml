@@ -7,24 +7,6 @@
     tools:context=".RobotStateActivity">
 
     <LinearLayout
-        android:id="@+id/linearLayout4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:id="@+id/program_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="programStatus: Unknown" />
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -75,12 +57,13 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -99,17 +82,28 @@
             android:layout_margin="5sp"
             android:layout_weight="1"
             android:text="controlMode: Unknown" />
+
+        <TextView
+            android:id="@+id/program_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:layout_weight="1"
+            android:text="programStatus: Unknown" />
     </LinearLayout>
 
     <TableLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/tableLayout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
         <TableRow
             android:layout_width="match_parent"
@@ -118,46 +112,93 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="1sp"
+                android:layout_weight="1"
                 android:background="@drawable/border"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/base_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4sp"
+                    android:layout_marginStart="4sp"
+                    android:layout_marginLeft="4sp"
+                    android:layout_marginTop="4sp"
+                    android:layout_marginEnd="4sp"
+                    android:layout_marginRight="4sp"
+                    android:layout_marginBottom="-8sp"
+                    android:gravity="center"
                     android:text="BASE"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/base_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4sp"
-                    android:text="pos: -\nV: -\nI: -\nT: -\nMode: -" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/base_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4sp"
+                        android:text="pos:\nV:\nI:\nT:\nMode:" />
+
+                    <TextView
+                        android:id="@+id/base"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4sp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="-\n-\n-\n-\n-" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="1sp"
+                android:layout_weight="1"
                 android:background="@drawable/border"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/shoulder_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4sp"
+                    android:layout_marginStart="4sp"
+                    android:layout_marginLeft="4sp"
+                    android:layout_marginTop="4sp"
+                    android:layout_marginEnd="4sp"
+                    android:layout_marginRight="4sp"
+                    android:layout_marginBottom="-8sp"
+                    android:gravity="center"
                     android:text="SHOULDER"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/shoulder_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4sp"
-                    android:text="pos: -\nV: -\nI: -\nT: -\nMode: -" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/shoulder_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4sp"
+                        android:text="pos:\nV:\nI:\nT:\nMode:" />
+
+                    <TextView
+                        android:id="@+id/shoulder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4sp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="-\n-\n-\n-\n-" />
+                </LinearLayout>
             </LinearLayout>
 
         </TableRow>
@@ -169,45 +210,91 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="1sp"
+                android:layout_weight="1"
                 android:background="@drawable/border"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/elbow_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4sp"
+                    android:layout_marginStart="4sp"
+                    android:layout_marginLeft="4sp"
+                    android:layout_marginTop="4sp"
+                    android:layout_marginEnd="4sp"
+                    android:layout_marginRight="4sp"
+                    android:layout_marginBottom="-8sp"
+                    android:gravity="center"
                     android:text="ELBOW"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/elbow_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4sp"
-                    android:text="pos: -\nV: -\nI: -\nT: -\nMode: -" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/elbow_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4sp"
+                        android:text="pos:\nV:\nI:\nT:\nMode:" />
+
+                    <TextView
+                        android:id="@+id/elbow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4sp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="-\n-\n-\n-\n-" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="1sp"
+                android:layout_weight="1"
                 android:background="@drawable/border"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/wirst1_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4sp"
+                    android:layout_marginStart="4sp"
+                    android:layout_marginLeft="4sp"
+                    android:layout_marginTop="4sp"
+                    android:layout_marginEnd="4sp"
+                    android:layout_marginRight="4sp"
+                    android:layout_marginBottom="-8sp"
+                    android:gravity="center"
                     android:text="WIRST1"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/wirst1_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4sp"
-                    android:text="pos: -\nV: -\nI: -\nT: -\nMode: -" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/wirst1_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4sp"
+                        android:text="pos:\nV:\nI:\nT:\nMode:" />
+
+                    <TextView
+                        android:id="@+id/wirst1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4sp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="-\n-\n-\n-\n-" />
+                </LinearLayout>
             </LinearLayout>
 
         </TableRow>
@@ -219,45 +306,91 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="1sp"
+                android:layout_weight="1"
                 android:background="@drawable/border"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/wirst2_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4sp"
+                    android:layout_marginStart="4sp"
+                    android:layout_marginLeft="4sp"
+                    android:layout_marginTop="4sp"
+                    android:layout_marginEnd="4sp"
+                    android:layout_marginRight="4sp"
+                    android:layout_marginBottom="-8sp"
+                    android:gravity="center"
                     android:text="WIRST2"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/wirst2_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4sp"
-                    android:text="pos: -\nV: -\nI: -\nT: -\nMode: -" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/wirst2_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4sp"
+                        android:text="pos:\nV:\nI:\nT:\nMode:" />
+
+                    <TextView
+                        android:id="@+id/wirst2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4sp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="-\n-\n-\n-\n-" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="1sp"
+                android:layout_weight="1"
                 android:background="@drawable/border"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/wirst3_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4sp"
+                    android:layout_marginStart="4sp"
+                    android:layout_marginLeft="4sp"
+                    android:layout_marginTop="4sp"
+                    android:layout_marginEnd="4sp"
+                    android:layout_marginRight="4sp"
+                    android:layout_marginBottom="-8sp"
+                    android:gravity="center"
                     android:text="WIRST3"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/wirst3_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4sp"
-                    android:text="pos: -\nV: -\nI: -\nT: -\nMode: -" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/wirst3_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4sp"
+                        android:text="pos:\nV:\nI:\nT:\nMode:" />
+
+                    <TextView
+                        android:id="@+id/wirst3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4sp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="-\n-\n-\n-\n-" />
+                </LinearLayout>
             </LinearLayout>
 
         </TableRow>
@@ -269,48 +402,103 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="1sp"
+                android:layout_weight="1"
                 android:background="@drawable/border"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tool_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4sp"
+                    android:layout_marginStart="4sp"
+                    android:layout_marginLeft="4sp"
+                    android:layout_marginTop="4sp"
+                    android:layout_marginEnd="4sp"
+                    android:layout_marginRight="4sp"
+                    android:layout_marginBottom="-8sp"
+                    android:gravity="center"
                     android:text="TOOL"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tool_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4sp"
-                    android:text="V: -\nI: -\nT: -\nMode: -" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tool_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4sp"
+                        android:text="V:\nI:\nT:\nMode:" />
+
+                    <TextView
+                        android:id="@+id/tool"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4sp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="-\n-\n-\n-" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="1sp"
+                android:layout_weight="1"
                 android:background="@drawable/border"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/master_board_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4sp"
+                    android:layout_marginStart="4sp"
+                    android:layout_marginLeft="4sp"
+                    android:layout_marginTop="4sp"
+                    android:layout_marginEnd="4sp"
+                    android:layout_marginRight="4sp"
+                    android:layout_marginBottom="-8sp"
+                    android:gravity="center"
                     android:text="M_BOARD"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/master_board_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4sp"
-                    android:text="T: -\nrobotV: -\nrobotC: -" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/master_board_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4sp"
+                        android:text="T:\nrobV:\nrobC:" />
+
+                    <TextView
+                        android:id="@+id/master_board"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4sp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="-\n-\n-" />
+                </LinearLayout>
             </LinearLayout>
 
         </TableRow>
     </TableLayout>
+
+    <TextView
+        android:id="@+id/stopped"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

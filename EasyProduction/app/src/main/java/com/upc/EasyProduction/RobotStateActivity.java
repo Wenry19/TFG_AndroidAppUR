@@ -1,11 +1,14 @@
 package com.upc.EasyProduction;
 
+import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
@@ -13,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.upc.EasyProduction.SubPackages.JointData;
 import com.upc.EasyProduction.SubPackages.RobotModeData;
 
 public class RobotStateActivity extends AppCompatActivity {
@@ -29,6 +33,18 @@ public class RobotStateActivity extends AppCompatActivity {
     private Button msgButton;
 
     private TextView programStatus;
+    private TextView emergProtStop;
+    private ColorStateList oldColors;
+
+    private TextView robotMode;
+    private TextView controlMode;
+
+    private TextView base;
+    private TextView shoulder;
+    private TextView elbow;
+    private TextView wirst1;
+    private TextView wirst2;
+    private TextView wirst3;
 
     private Thread updatingValuesThread;
 
@@ -58,6 +74,18 @@ public class RobotStateActivity extends AppCompatActivity {
         msgButton = findViewById(R.id.msg_button);
 
         programStatus = findViewById(R.id.program_status);
+        emergProtStop = findViewById(R.id.stopped);
+        oldColors =  emergProtStop.getTextColors();
+
+        robotMode = findViewById(R.id.robot_mode);
+        controlMode = findViewById(R.id.control_mode);
+
+        base = findViewById(R.id.base);
+        shoulder = findViewById(R.id.shoulder);
+        elbow = findViewById(R.id.elbow);
+        wirst1 = findViewById(R.id.wirst1);
+        wirst2 = findViewById(R.id.wirst2);
+        wirst3 = findViewById(R.id.wirst3);
 
         startUpdatingValues();
     }
@@ -159,6 +187,7 @@ public class RobotStateActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            // ROBOT MODE DATA
                             if (rmData.getIsProgramRunning()) {
                                 programStatus.setText("programStatus: RUNNING");
                             }
@@ -168,10 +197,58 @@ public class RobotStateActivity extends AppCompatActivity {
                             else {
                                 programStatus.setText("programStatus: STOPPED");
                             }
+
+                            if (rmData.getIsEmergencyStopped()){ // test in real robot
+                                emergProtStop.setText("EMERGENCY STOP");
+                                emergProtStop.setTextColor(Color.RED);
+                            }
+                            else if (rmData.getIsProtectiveStopped()){ // test in real robot
+                                emergProtStop.setText("PROTECTIVE STOP");
+                                emergProtStop.setTextColor(Color.RED);
+                            }
+                            else{
+                                emergProtStop.setText("");
+                                emergProtStop.setTextColor(oldColors);
+                            }
+
+                            robotMode.setText("robotMode: " + rmData.getRobotModeStr());
+                            controlMode.setText("controlMode: " + rmData.getControlModeStr());
+
+                            // JOINT DATA
+
+                            JointData jData = networkService.getJointData();
+                            String aux = jData.getBaseQactualStr() +"º\n" + jData.getBaseVactualStr() + "V\n"
+                                    + jData.getBaseIactualStr() + "A\n" + jData.getBaseTmotorStr() + "ºC\n" + jData.getBaseJointModeStr();
+                            base.setText(aux);
+
+                            aux = jData.getShoulderQactualStr() +"º\n" + jData.getShoulderVactualStr() + "V\n"
+                                    + jData.getShoulderIactualStr() + "A\n" + jData.getShoulderTmotorStr() + "ºC\n" + jData.getShoulderJointModeStr();
+                            shoulder.setText(aux);
+
+                            aux = jData.getElbowQactualStr() +"º\n" + jData.getElbowVactualStr() + "V\n"
+                                    + jData.getElbowIactualStr() + "A\n" + jData.getElbowTmotorStr() + "ºC\n" + jData.getElbowJointModeStr();
+                            elbow.setText(aux);
+
+                            aux = jData.getWirst1QactualStr() +"º\n" + jData.getWirst1VactualStr() + "V\n"
+                                    + jData.getWirst1IactualStr() + "A\n" + jData.getWirst1TmotorStr() + "ºC\n" + jData.getWirst1JointModeStr();
+                            wirst1.setText(aux);
+
+                            aux = jData.getWirst2QactualStr() +"º\n" + jData.getWirst2VactualStr() + "V\n"
+                                    + jData.getWirst2IactualStr() + "A\n" + jData.getWirst2TmotorStr() + "ºC\n" + jData.getWirst2JointModeStr();
+                            wirst2.setText(aux);
+
+                            aux = jData.getWirst3QactualStr() +"º\n" + jData.getWirst3VactualStr() + "V\n"
+                                    + jData.getWirst3IactualStr() + "A\n" + jData.getWirst3TmotorStr() + "ºC\n" + jData.getWirst3JointModeStr();
+                            wirst3.setText(aux);
+
+                            // TOOL DATA
+
+                            // MASTER BOARD DATA
+
                         }
                     });
                     try {
-                        this.sleep(1000);
+                        this.sleep(500);
                     }
                     catch (Exception e){
                         e.printStackTrace();

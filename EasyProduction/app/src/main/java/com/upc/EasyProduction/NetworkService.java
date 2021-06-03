@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
+import com.upc.EasyProduction.SubPackages.JointData;
 import com.upc.EasyProduction.SubPackages.RobotModeData;
 
 public class NetworkService extends Service {
@@ -161,6 +162,9 @@ public class NetworkService extends Service {
 
     public RobotModeData getRobotModeData(){
         return tcpIp.getRobotModeData();
+    }
+    public JointData getJointData(){
+        return tcpIp.getJointData();
     }
 
 }
