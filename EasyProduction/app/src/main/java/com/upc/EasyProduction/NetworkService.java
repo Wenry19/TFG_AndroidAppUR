@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
+import com.upc.EasyProduction.SubPackages.RobotModeData;
+
 public class NetworkService extends Service {
 
     public static final String CHANNEL_ID = "ForegroundServiceChannel";
@@ -105,13 +107,13 @@ public class NetworkService extends Service {
     }
 
     // https://stackoverflow.com/questions/38239291/showing-a-toast-notification-from-a-service
-    public void toastMessage(String message) {
+    private void toastMessage(String message) {
 
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(NetworkService.this, message, Toast.LENGTH_LONG).show();
+                Toast.makeText(NetworkService.this, message, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -132,7 +134,10 @@ public class NetworkService extends Service {
 
                     // receive and decode info packages of robot state
                     // when necessary notifies user
+
+                    tcpIp.receivePackage();
                 }
+                tcpIp.close();
             }
         };
 
@@ -154,20 +159,8 @@ public class NetworkService extends Service {
         return ip;
     }
 
-
-    // My Thread
-    // thread killed when run method has completed
-
-    private class MyThread extends Thread {
-        private boolean stopped = false;
-
-        public void myStop(){
-            stopped = true;
-        }
-
-        public boolean isStopped(){
-            return stopped;
-        }
+    public RobotModeData getRobotModeData(){
+        return tcpIp.getRobotModeData();
     }
 
 }

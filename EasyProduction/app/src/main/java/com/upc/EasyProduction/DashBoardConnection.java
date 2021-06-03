@@ -42,6 +42,17 @@ public class DashBoardConnection {
         }
     }
 
+    public void close(){
+        try {
+            socket.close();
+            out.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            socket_connected = false;
+        }
+    }
+
     public boolean isSocketConnected(){
         return socket_connected;
     }
@@ -49,7 +60,7 @@ public class DashBoardConnection {
     // in theory println adds \n in the end of the string
 
     public void play(){
-        out.println("play");
+        out.println("play"); // does not rise an exception
     }
 
     public void pause(){

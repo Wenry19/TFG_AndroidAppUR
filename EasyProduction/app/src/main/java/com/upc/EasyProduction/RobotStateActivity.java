@@ -10,7 +10,10 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.upc.EasyProduction.SubPackages.RobotModeData;
 
 public class RobotStateActivity extends AppCompatActivity {
 
@@ -25,6 +28,10 @@ public class RobotStateActivity extends AppCompatActivity {
     private Button stopButton;
     private Button msgButton;
 
+    private TextView programStatus;
+
+    private Thread updatingValuesThread;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +39,9 @@ public class RobotStateActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         robotIP = i.getStringExtra("ip");
-        // check ip again?
+        // check ip again? checked in each connection
+
+        db = new DashBoardConnection(robotIP);
     }
 
     @Override
@@ -48,7 +57,9 @@ public class RobotStateActivity extends AppCompatActivity {
         stopButton = findViewById(R.id.stop_button);
         msgButton = findViewById(R.id.msg_button);
 
-        db = new DashBoardConnection(robotIP);
+        programStatus = findViewById(R.id.program_status);
+
+        startUpdatingValues();
     }
 
     @Override
@@ -70,7 +81,6 @@ public class RobotStateActivity extends AppCompatActivity {
         }
     }
 
-
     public void onClickPlayButton(View v){
 
         (new Thread(){
@@ -84,6 +94,7 @@ public class RobotStateActivity extends AppCompatActivity {
                 else{
                     //...
                 }
+                db.close();
             }
         }).start();
 
@@ -102,6 +113,7 @@ public class RobotStateActivity extends AppCompatActivity {
                 else{
 
                 }
+                db.close();
             }
         }).start();
 
@@ -120,6 +132,7 @@ public class RobotStateActivity extends AppCompatActivity {
                 else{
 
                 }
+                db.close();
             }
         }).start();
 
@@ -128,6 +141,51 @@ public class RobotStateActivity extends AppCompatActivity {
     public void onClickMsgButton(View v){
 
     }
+
+    private void startUpdatingValues(){
+        // make sure that we are bound
+
+        updatingValuesThread = (new MyThread(){
+            @Override
+            public void run() {
+                super.run();
+
+                while (networkService == null);
+
+                while (bound){ // if stop activity then we do unbind
+
+                    RobotModeData rmData = networkService.getRobotModeData();
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (rmData.getIsProgramRunning()) {
+                                programStatus.setText("programStatus: RUNNING");
+                            }
+                            else if (rmData.getIsProgramPaused()){
+                                programStatus.setText("programStatus: PAUSED");
+                            }
+                            else {
+                                programStatus.setText("programStatus: STOPPED");
+                            }
+                        }
+                    });
+                    try {
+                        this.sleep(1000);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        });
+
+        updatingValuesThread.start();
+    }
+
+
+
 
     /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection connection = new ServiceConnection() {

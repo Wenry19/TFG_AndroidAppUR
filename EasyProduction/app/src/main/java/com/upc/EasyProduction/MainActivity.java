@@ -47,14 +47,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        boolean NetworkServiceStarted = isMyServiceRunning(NetworkService.class);
-
         connectButton = findViewById(R.id.connect_button);
         disconnectButton = findViewById(R.id.disconnect_button);
         startButton = findViewById(R.id.start_button);
         ipText = findViewById(R.id.ip_robot);
 
-        if (!NetworkServiceStarted){
+        if (!isMyServiceRunning(NetworkService.class)){
             ipText.setEnabled(true);
             connectButton.setEnabled(true);
             disconnectButton.setEnabled(false);
@@ -158,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickStartButton(View v){
         Intent i = new Intent(this, RobotStateActivity.class);
-        i.putExtra("ip", robotIP);
+        i.putExtra("ip", ipText.getText().toString());
         // our activity inherits from context
         startActivity(i);
     }
