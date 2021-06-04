@@ -19,7 +19,9 @@ import android.widget.Toast;
 import androidx.core.app.NotificationCompat;
 
 import com.upc.EasyProduction.SubPackages.JointData;
+import com.upc.EasyProduction.SubPackages.MasterBoardData;
 import com.upc.EasyProduction.SubPackages.RobotModeData;
+import com.upc.EasyProduction.SubPackages.ToolData;
 
 public class NetworkService extends Service {
 
@@ -165,6 +167,12 @@ public class NetworkService extends Service {
     }
     public JointData getJointData(){
         return tcpIp.getJointData();
+    }
+    public ToolData getToolData(){
+        return tcpIp.getToolData();
+    }
+    public MasterBoardData getMasterBoardData(){
+        return tcpIp.getMasterBoardData();
     }
 
 }

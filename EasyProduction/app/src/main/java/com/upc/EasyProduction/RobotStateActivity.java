@@ -17,7 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.upc.EasyProduction.SubPackages.JointData;
+import com.upc.EasyProduction.SubPackages.MasterBoardData;
 import com.upc.EasyProduction.SubPackages.RobotModeData;
+import com.upc.EasyProduction.SubPackages.ToolData;
 
 public class RobotStateActivity extends AppCompatActivity {
 
@@ -45,6 +47,8 @@ public class RobotStateActivity extends AppCompatActivity {
     private TextView wirst1;
     private TextView wirst2;
     private TextView wirst3;
+    private TextView tool;
+    private TextView master_board;
 
     private Thread updatingValuesThread;
 
@@ -86,6 +90,8 @@ public class RobotStateActivity extends AppCompatActivity {
         wirst1 = findViewById(R.id.wirst1);
         wirst2 = findViewById(R.id.wirst2);
         wirst3 = findViewById(R.id.wirst3);
+        tool = findViewById(R.id.tool);
+        master_board = findViewById(R.id.master_board);
 
         startUpdatingValues();
     }
@@ -183,6 +189,9 @@ public class RobotStateActivity extends AppCompatActivity {
                 while (bound){ // if stop activity then we do unbind
 
                     RobotModeData rmData = networkService.getRobotModeData();
+                    JointData jData = networkService.getJointData();
+                    ToolData tData = networkService.getToolData();
+                    MasterBoardData mbData = networkService.getMasterBoardData();
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -216,7 +225,6 @@ public class RobotStateActivity extends AppCompatActivity {
 
                             // JOINT DATA
 
-                            JointData jData = networkService.getJointData();
                             String aux = jData.getBaseQactualStr() +"º\n" + jData.getBaseVactualStr() + "V\n"
                                     + jData.getBaseIactualStr() + "A\n" + jData.getBaseTmotorStr() + "ºC\n" + jData.getBaseJointModeStr();
                             base.setText(aux);
@@ -243,7 +251,14 @@ public class RobotStateActivity extends AppCompatActivity {
 
                             // TOOL DATA
 
+                            aux = tData.getToolVoltageStr() + "V\n" + tData.getToolCurrentStr() + "A\n" + tData.getToolTemperatureStr() + "ºC\n"
+                                    + tData.getToolModeStr();
+                            tool.setText(aux);
+
                             // MASTER BOARD DATA
+
+                            aux = mbData.getMasterBoardTemperatureStr() + "ºC\n" + mbData.getRobotVoltageStr() + "V\n" + mbData.getRobotCurrentStr() + "A";
+                            master_board.setText(aux);
 
                         }
                     });
