@@ -2,10 +2,11 @@ package com.upc.EasyProduction;
 
 import android.util.Log;
 
-import com.upc.EasyProduction.SubPackages.JointData;
-import com.upc.EasyProduction.SubPackages.MasterBoardData;
-import com.upc.EasyProduction.SubPackages.RobotModeData;
-import com.upc.EasyProduction.SubPackages.ToolData;
+import com.upc.EasyProduction.DataPackages.GVarsData;
+import com.upc.EasyProduction.DataPackages.JointData;
+import com.upc.EasyProduction.DataPackages.MasterBoardData;
+import com.upc.EasyProduction.DataPackages.RobotModeData;
+import com.upc.EasyProduction.DataPackages.ToolData;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +14,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.LinkedList;
 
 public class TcpIpConnection {
 
@@ -31,6 +33,7 @@ public class TcpIpConnection {
     private JointData jData = new JointData();
     private ToolData tData = new ToolData();
     private MasterBoardData mbData = new MasterBoardData();
+    private GVarsData gvData = new GVarsData();
 
 
     TcpIpConnection(String robotIP){
@@ -55,9 +58,11 @@ public class TcpIpConnection {
         try{
             socket.close();
             in.close();
+            socket_connected = false;
         }
         catch (Exception e){
             e.printStackTrace();
+            socket_connected = false;
         }
     }
 
@@ -68,49 +73,35 @@ public class TcpIpConnection {
     public void receivePackage(){
         try {
 
-            byte package_size[] = new byte[4]; // int
+            if (socket_connected && in.available() >= 4096) {
+                // all packages are < 4096 bytes, so we are sure that there are at least 1 package available
 
-            if (socket_connected && in.available() >= 4) {
-                int num_read_bytes = in.read(package_size, 0, 4);
+                byte package_size[] = new byte[4]; // int
 
-                if (num_read_bytes == 4) {
+                in.read(package_size, 0, 4);
 
-                    int len = ByteBuffer.wrap(package_size).getInt();
+                int len = ByteBuffer.wrap(package_size).getInt();
 
-                    if (in.available() >= len-4) { // make sure that all package is sent
+                int type = in.read();
 
-                        int type = in.read();
+                int current_len = len - 4 - 1;
 
-                        int current_len = len - 4 - 1;
+                byte body[] = new byte[current_len]; // body
 
-                        byte body[] = new byte[current_len]; // body
+                in.read(body, 0, current_len);
 
-                        int num_bytes_read = in.read(body, 0, current_len);
-
-                        if (num_bytes_read == current_len) {
-                            decodeSubpackages(type, body);
-                        } else {
-                            Log.d("ups", "num_bytes_read != current_len");
-                            current_len -= num_bytes_read;
-                            while (current_len != 0) {
-                                current_len -= in.read(body, 0, current_len);
-                            }
-                        }
-                    }
-
+                if (type == 16) {
+                    decodeSubpackages(body);
+                } else if (type == 25) {
+                    decodeVarsPackages(body);
                 }
             }
-            /*else {
-                Log.d("info_package", "not available packages");
-            }*/
-        }
-        catch (UnknownHostException e){
-            e.printStackTrace();
-            socket_connected = false;
-        }
-        catch (IOException e){
-            e.printStackTrace();
-            socket_connected = false;
+            else{
+                // check if socket is alive!!
+                if(socket.getInetAddress() == null || !socket.getInetAddress().isReachable(2000)){
+                    socket_connected = false;
+                }
+            }
         }
         catch (Exception e){
             e.printStackTrace();
@@ -118,40 +109,53 @@ public class TcpIpConnection {
         }
     }
 
-    private void decodeSubpackages(int type, byte[] body){
+    private void decodeSubpackages(byte[] body){
         int index = 0;
 
-        if (type == 16){
+        while (index < body.length){
 
-            while (index < body.length){
+            // len of subpackage
+            int subp_size = ByteBuffer.wrap(Arrays.copyOfRange(body, index, index + 4)).getInt();
+            index += 4;
 
-                // len of subpackage
-                int subp_size = ByteBuffer.wrap(Arrays.copyOfRange(body, index, index + 4)).getInt();
-                index += 4;
+            // type of subpackage
+            int subp_type = body[index];
+            index += 1;
 
-                // type of subpackage
-                int subp_type = body[index];
-                index += 1;
-
-                if (subp_size == 0) Log.d("ups", "subp_size = 0");
-
-                if (subp_type == 0){ // Robot Mode Data
-                    rmData.updateData(Arrays.copyOfRange(body, index, index + subp_size - 5));
-                }
-                else if (subp_type == 1){ // Joint Data
-                    jData.updateData(Arrays.copyOfRange(body, index, index + subp_size - 5));
-                }
-                else if (subp_type == 2){ // Tool Data
-                    tData.updateData(Arrays.copyOfRange(body, index, index + subp_size - 5));
-                }
-                else if (subp_type == 3){ // Master Board Data
-                    mbData.updateData(Arrays.copyOfRange(body, index, index + subp_size - 5));
-                }
-
-                index += subp_size - 5;
-
+            if (subp_type == 0){ // Robot Mode Data
+                rmData.updateData(Arrays.copyOfRange(body, index, index + subp_size - 5));
             }
+            else if (subp_type == 1){ // Joint Data
+                jData.updateData(Arrays.copyOfRange(body, index, index + subp_size - 5));
+            }
+            else if (subp_type == 2){ // Tool Data
+                tData.updateData(Arrays.copyOfRange(body, index, index + subp_size - 5));
+            }
+            else if (subp_type == 3){ // Master Board Data
+                mbData.updateData(Arrays.copyOfRange(body, index, index + subp_size - 5));
+            }
+
+            index += subp_size - 5;
+
         }
+    }
+
+    private void decodeVarsPackages(byte[] body){
+        // jump 8 bytes of timestamp
+        // read byte of type var package
+        int type = body[8];
+        int startIndex = ((body[9] << 8) & 0x0000ff00) | (body[10] & 0x000000ff);
+        if (type == 0){
+            gvData.updateDataNames(Arrays.copyOfRange(body, 11, body.length));
+        }
+        else if (type == 1){
+            gvData.updateDataValues(Arrays.copyOfRange(body, 11, body.length));
+        }
+
+    }
+
+    public void setVarNames(LinkedList<String> names){ // to set vars to track
+        gvData.setVarNames(names);
     }
 
     // getters
@@ -167,5 +171,8 @@ public class TcpIpConnection {
     }
     public MasterBoardData getMasterBoardData(){
         return mbData;
+    }
+    public GVarsData getGlobalVariablesData(){
+        return gvData;
     }
 }

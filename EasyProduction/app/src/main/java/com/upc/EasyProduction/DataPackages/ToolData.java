@@ -1,9 +1,9 @@
-package com.upc.EasyProduction.SubPackages;
+package com.upc.EasyProduction.DataPackages;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-public class ToolData extends SubPackage{
+public class ToolData extends SubPackage {
 
     private float tool_voltage_48V = -1;
     private float tool_current = -1;

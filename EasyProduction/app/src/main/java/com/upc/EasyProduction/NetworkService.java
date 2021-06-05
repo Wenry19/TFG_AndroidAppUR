@@ -6,22 +6,23 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.provider.Settings;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
-import com.upc.EasyProduction.SubPackages.JointData;
-import com.upc.EasyProduction.SubPackages.MasterBoardData;
-import com.upc.EasyProduction.SubPackages.RobotModeData;
-import com.upc.EasyProduction.SubPackages.ToolData;
+import com.upc.EasyProduction.DataPackages.GVarsData;
+import com.upc.EasyProduction.DataPackages.JointData;
+import com.upc.EasyProduction.DataPackages.MasterBoardData;
+import com.upc.EasyProduction.DataPackages.RobotModeData;
+import com.upc.EasyProduction.DataPackages.ToolData;
+
+import java.util.Arrays;
+import java.util.LinkedList;
 
 public class NetworkService extends Service {
 
@@ -38,6 +39,8 @@ public class NetworkService extends Service {
     private boolean triedToConnect = false;
 
     //private MediaPlayer player;
+
+    LinkedList<String> var_names = new LinkedList<String>();
 
     public class MyBinder extends Binder {
         NetworkService getService() {
@@ -138,7 +141,16 @@ public class NetworkService extends Service {
                     // receive and decode info packages of robot state
                     // when necessary notifies user
 
+                    // set vars to track
+                    tcpIp.setVarNames(var_names);
+
+                    // receive package
                     tcpIp.receivePackage();
+
+                }
+                if (!tcpIp.isSocketConnected()){
+                    // notification instead of a toast message...
+                    toastMessage("Connection Lost: Please, reconnect");
                 }
                 tcpIp.close();
             }
@@ -173,6 +185,25 @@ public class NetworkService extends Service {
     }
     public MasterBoardData getMasterBoardData(){
         return tcpIp.getMasterBoardData();
+    }
+    public GVarsData getGlobalVariablesData(){
+        return tcpIp.getGlobalVariablesData();
+    }
+
+    public void addVarName(String name){
+        if (!var_names.contains(name)) { // if it already contains name, do not add again...
+            var_names.add(name);
+        }
+    }
+    public void delVarName(String name){
+        var_names.remove(name);
+    }
+    public int getVarNamesSize(){
+        return var_names.size();
+    }
+
+    public String[] getVarNamesByUser(){
+        return var_names.toArray(new String[var_names.size()]);
     }
 
 }

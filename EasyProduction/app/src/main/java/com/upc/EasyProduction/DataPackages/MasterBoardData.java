@@ -1,9 +1,9 @@
-package com.upc.EasyProduction.SubPackages;
+package com.upc.EasyProduction.DataPackages;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-public class MasterBoardData extends SubPackage{
+public class MasterBoardData extends SubPackage {
 
     private float master_board_temperature;
     private float robot_voltage_48V;

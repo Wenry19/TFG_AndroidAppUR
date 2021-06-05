@@ -1,6 +1,5 @@
 package com.upc.EasyProduction;
 
-import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ComponentName;
@@ -14,12 +13,11 @@ import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.upc.EasyProduction.SubPackages.JointData;
-import com.upc.EasyProduction.SubPackages.MasterBoardData;
-import com.upc.EasyProduction.SubPackages.RobotModeData;
-import com.upc.EasyProduction.SubPackages.ToolData;
+import com.upc.EasyProduction.DataPackages.JointData;
+import com.upc.EasyProduction.DataPackages.MasterBoardData;
+import com.upc.EasyProduction.DataPackages.RobotModeData;
+import com.upc.EasyProduction.DataPackages.ToolData;
 
 public class RobotStateActivity extends AppCompatActivity {
 
@@ -34,7 +32,7 @@ public class RobotStateActivity extends AppCompatActivity {
     private Button stopButton;
     private Button msgButton;
 
-    private TextView programStatus;
+    private TextView programState;
     private TextView emergProtStop;
     private ColorStateList oldColors;
 
@@ -77,7 +75,7 @@ public class RobotStateActivity extends AppCompatActivity {
         stopButton = findViewById(R.id.stop_button);
         msgButton = findViewById(R.id.msg_button);
 
-        programStatus = findViewById(R.id.program_status);
+        programState = findViewById(R.id.program_state);
         emergProtStop = findViewById(R.id.stopped);
         oldColors =  emergProtStop.getTextColors();
 
@@ -198,13 +196,13 @@ public class RobotStateActivity extends AppCompatActivity {
                         public void run() {
                             // ROBOT MODE DATA
                             if (rmData.getIsProgramRunning()) {
-                                programStatus.setText("programStatus: RUNNING");
+                                programState.setText("programState: RUNNING");
                             }
                             else if (rmData.getIsProgramPaused()){
-                                programStatus.setText("programStatus: PAUSED");
+                                programState.setText("programState: PAUSED");
                             }
                             else {
-                                programStatus.setText("programStatus: STOPPED");
+                                programState.setText("programState: STOPPED");
                             }
 
                             if (rmData.getIsEmergencyStopped()){ // test in real robot

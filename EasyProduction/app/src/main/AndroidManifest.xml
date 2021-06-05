@@ -3,7 +3,7 @@
     package="com.upc.EasyProduction">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -12,10 +12,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EasyProduction">
+        <activity android:name=".GlobalVariablesActivity"></activity>
+
         <service
             android:name=".NetworkService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity android:name=".RobotStateActivity" />
         <activity android:name=".MainActivity">

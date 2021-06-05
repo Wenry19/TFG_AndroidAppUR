@@ -24,7 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Button connectButton;
     private Button disconnectButton;
-    private Button startButton;
+    private Button stateButton;
+    private Button varsButton;
     private EditText ipText;
 
     @Override
@@ -49,14 +50,16 @@ public class MainActivity extends AppCompatActivity {
 
         connectButton = findViewById(R.id.connect_button);
         disconnectButton = findViewById(R.id.disconnect_button);
-        startButton = findViewById(R.id.start_button);
+        stateButton = findViewById(R.id.state_button);
+        varsButton = findViewById(R.id.global_vars);
         ipText = findViewById(R.id.ip_robot);
 
         if (!isMyServiceRunning(NetworkService.class)){
             ipText.setEnabled(true);
             connectButton.setEnabled(true);
             disconnectButton.setEnabled(false);
-            startButton.setEnabled(false);
+            stateButton.setEnabled(false);
+            varsButton.setEnabled(false);
         }
         else{
             if (!bound) {
@@ -80,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
             ipText.setEnabled(false);
             connectButton.setEnabled(false);
             disconnectButton.setEnabled(true);
-            startButton.setEnabled(true);
+            stateButton.setEnabled(true);
+            varsButton.setEnabled(true);
         }
     }
 
@@ -131,7 +135,8 @@ public class MainActivity extends AppCompatActivity {
                             ipText.setEnabled(false);
                             connectButton.setEnabled(false);
                             disconnectButton.setEnabled(true);
-                            startButton.setEnabled(true);
+                            stateButton.setEnabled(true);
+                            varsButton.setEnabled(true);
                         }
                         doUnbindService();
                     }
@@ -154,8 +159,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onClickStartButton(View v){
+    public void onClickStateButton(View v){
         Intent i = new Intent(this, RobotStateActivity.class);
+        i.putExtra("ip", ipText.getText().toString());
+        // our activity inherits from context
+        startActivity(i);
+    }
+
+    public void onClickVarsButton(View v){
+        Intent i = new Intent(this, GlobalVariablesActivity.class);
         i.putExtra("ip", ipText.getText().toString());
         // our activity inherits from context
         startActivity(i);
@@ -168,7 +180,8 @@ public class MainActivity extends AppCompatActivity {
         ipText.setEnabled(true);
         connectButton.setEnabled(true);
         disconnectButton.setEnabled(false);
-        startButton.setEnabled(false);
+        stateButton.setEnabled(false);
+        varsButton.setEnabled(false);
     }
 
     /** Defines callbacks for service binding, passed to bindService() */

@@ -1,6 +1,6 @@
-package com.upc.EasyProduction.SubPackages;
+package com.upc.EasyProduction.DataPackages;
 
-public class RobotModeData extends SubPackage{
+public class RobotModeData extends SubPackage {
 
     private boolean isEmergencyStopped = false;
     private boolean isProtectiveStopped = false;

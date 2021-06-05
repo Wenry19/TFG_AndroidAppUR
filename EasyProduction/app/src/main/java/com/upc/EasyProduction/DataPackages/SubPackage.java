@@ -1,4 +1,4 @@
-package com.upc.EasyProduction.SubPackages;
+package com.upc.EasyProduction.DataPackages;
 
 public class SubPackage {
 
