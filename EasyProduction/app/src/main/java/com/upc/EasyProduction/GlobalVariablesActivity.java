@@ -125,6 +125,7 @@ public class GlobalVariablesActivity extends AppCompatActivity {
 
             varName.setText("");
             delButton.setEnabled(true);
+            varsByUser.scrollTo(0, 0);
         }
 
     }
@@ -150,6 +151,7 @@ public class GlobalVariablesActivity extends AppCompatActivity {
         }).start();
 
         varName.setText("");
+        varsByUser.scrollTo(0, 0);
 
     }
 
