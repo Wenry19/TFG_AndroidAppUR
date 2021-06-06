@@ -44,6 +44,7 @@ public class GlobalVariablesActivity extends AppCompatActivity {
         }
 
         vars = findViewById(R.id.vars);
+        vars.setMovementMethod(new ScrollingMovementMethod());
 
         addButton = findViewById(R.id.add);
         delButton = findViewById(R.id.delete);
@@ -166,31 +167,39 @@ public class GlobalVariablesActivity extends AppCompatActivity {
                 while (bound) { // if stop activity then we do unbind
 
                     String[] names = gvData.getVarsNames();
+                    String[] values = gvData.getVarsValues();
                     String[] names_by_user = networkService.getVarNamesByUser();
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 
-                            String auxNamesByUser = "";
+                            String aux = "";
 
                             for (int i = 0; i< names_by_user.length; i++){
-                                auxNamesByUser += names_by_user[i];
+                                aux += names_by_user[i];
                                 if (i != names_by_user.length - 1){
-                                    auxNamesByUser += ", ";
+                                    aux += ", ";
                                 }
                             }
 
-                            varsByUser.setText("Variables Entered by User: " + auxNamesByUser);
+                            varsByUser.setText("Variables Entered by User: " + aux);
 
 
-                            String aux = "";
-                            for (int i = 0; i < names.length; i++){
+                            if (names.length > 0 && values.length > 0) { // && names.length == values.length
+                                aux = "";
 
-                                aux += names[i] + "\n";
+                                int l;
+                                if (names.length > values.length) l = values.length;
+                                else l = names.length;
 
+                                for (int i = 0; i < l; i++) {
+
+                                    aux += names[i] + " = " + values[i] + "\n";
+
+                                }
+                                vars.setText(aux);
                             }
-                            vars.setText(aux);
                         }
                     });
 

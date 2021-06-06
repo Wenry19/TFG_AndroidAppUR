@@ -1,50 +1,342 @@
 package com.upc.EasyProduction.DataPackages;
 
+import android.util.Log;
 import android.util.Pair;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.LinkedList;
 
 public class GVarsData {
 
     private LinkedList<String> all_names = new LinkedList<String>();
-    private LinkedList<String> values = new LinkedList<String>();
+    private LinkedList<String> all_values = new LinkedList<String>();
     private LinkedList<String> names_by_user = new LinkedList<String>();
-    private LinkedList<String> names = new LinkedList<String>();
-    private LinkedList<Integer> names_indices = new LinkedList<Integer>();
 
-    public void updateDataNames(byte[] body){
+    private LinkedList<String> aux_values = new LinkedList<String>();
+
+
+    public void updateDataNames(byte[] body, int startIndex){
         // we have to be sure that all names entered by user are valid variables names
 
-        String aux = new String(body);
+        // i suppose that the first package sent is with startIndex = 0
+        if (startIndex == 0) {
+            all_names = new LinkedList(Arrays.asList((new String(body)).split("\n")));
+        }
+        else { // if not, means that it is another message with the rest of variables!!
+            all_names.addAll(Arrays.asList((new String(body)).split("\n")));
+        }
 
-        all_names = new LinkedList(Arrays.asList(aux.split("\n")));
+        //Log.d("StartIndexNames", String.valueOf(startIndex)); // test!!
+    }
 
-        names.clear();
+    public void updateDataValues(byte[] body, int startIndex){
 
-        for (int i = 0; i < all_names.size(); i++){ // i iterate all names because i want to know the order of names vars, independent of the user's order...
-            // maybe it could be done more efficiently, with a linked list of pairs string, integer and the sorting this list
-            // in this way we have only to iterate names list and no all_names, but we have to sort the list by index...
-            if(names_by_user.contains(all_names.get(i))){
-                names.add(all_names.get(i));
-                names_indices.add(i);
+        //Log.d("StartIndexValues", String.valueOf(startIndex)); // test!!
+
+        if (startIndex == 0) {
+            aux_values.clear();
+        }
+
+        // Each variable value contains type byte, data, and terminating new line character (\n character).
+        // Example - two variables of type BOOL(True), and STRING("aaaa"): 0c 01 0a 03 00 04 61 61 61 61 0a
+
+        // types:
+        // https://www.universal-robots.com/articles/ur/interface-communication/remote-control-via-tcpip/
+
+        // NONE=0 CONST_STRING=3 VAR_STRING=4 POSE=12 BOOL=13 NUM=14 INT=15 FLOAT=16 LIST=17 MATRIX=18
+
+        int i = 0;
+
+        while (i < body.length){
+
+            int type = 0xff & body[i];
+            i += 1;
+
+            Pair<Integer, String> aux;
+
+            switch (type) {
+
+                case 0: // NONE
+                    aux_values.add("NONE");
+                    i += 0; // no content
+                    break;
+
+                case 3: // CONST_STRING_VAL
+                case 4: // VAR_STRING_VAL
+                    aux = decodeString(body, i);
+                    i = aux.first;
+                    aux_values.add(aux.second);
+                    break;
+
+                case 12: // POSE_VAL
+                    aux = decodePose(body, i);
+                    i = aux.first;
+                    aux_values.add(aux.second);
+                    break;
+
+                case 13: // BOOL_VAL
+                    aux = decodeBool(body, i);
+                    i = aux.first;
+                    aux_values.add(aux.second);
+                    break;
+
+                case 14: // NUM_VAL
+                case 16: // FLOAT_VAL
+                    aux = decodeNumFloat(body, i);
+                    i = aux.first;
+                    aux_values.add(aux.second);
+                    break;
+
+                case 15: // INT_VAL
+                    aux = decodeInt(body, i);
+                    i = aux.first;
+                    aux_values.add(aux.second);
+                    break;
+
+                case 17: // LIST_VAL
+                    // all elements have the same type
+                    // can not have string lists
+                    aux = decodeLists(body, i);
+                    i = aux.first;
+                    aux_values.add(aux.second);
+                    break;
+
+                case 18: // MATRIX_VAL
+                    aux = decodeMatrix(body, i);
+                    i = aux.first;
+                    aux_values.add(aux.second);
+                    break;
+
+                default:
+                    Log.d("FAIL type", String.valueOf(type));
+                    break;
+            }
+            if (body[i] != '\n'){
+                Log.d("something_wrong", String.valueOf(i)); // something went wrong...
+                break;
+            }
+            else{
+                i += 1; // jump "\n"
             }
         }
 
+        all_values = (LinkedList<String>) aux_values.clone();
+
+        // aux_values to avoid this exception!!:
+        /*
+        E/AndroidRuntime: FATAL EXCEPTION: Thread-6
+            Process: com.upc.EasyProduction, PID: 8215
+            java.lang.ArrayIndexOutOfBoundsException: length=109; index=109
+                at java.util.LinkedList.toArray(LinkedList.java:1103)
+                at com.upc.EasyProduction.DataPackages.GVarsData.getVarsValues(GVarsData.java:268)
+                at com.upc.EasyProduction.GlobalVariablesActivity$4.run(GlobalVariablesActivity.java:170)
+         */
     }
 
-    public void updateDataValues(byte[] body){
-        values.clear();
+
+    private Pair<Integer, String> decodeLists(byte[] body, int i){
+
+        // list can be of types: boolean, float, int, pose
+        // no list of lists, no list of strings
+        // This script converts a value of type Boolean, Integer, Float, Pose (or a list of those types) to a string.
+        // https://forum.universal-robots.com/t/handling-list-of-strings/13768
+
+        // just in case i check if it is a string, but it can not be... i think
+
+        String result = "[";
+        String elem = "";
+
+        int list_len = ((body[i] << 8) & 0x0000ff00) | (body[i+1] & 0x000000ff);
+
+        i += 2;
+
+        // for each item, 1 byte for type, and then value
+        int x = 0;
+        while (x < list_len){
+
+            int type = 0xff & body[i];
+            i += 1;
+
+            Pair<Integer, String> aux;
+
+            switch (type) {
+
+                case 0: // NONE
+                    elem = "NONE";
+                    i += 0; // no content, next byte
+                    break;
+
+                case 12: // POSE_VAL
+                    aux = decodePose(body, i);
+                    i = aux.first;
+                    elem = aux.second;
+                    break;
+
+                case 13: // BOOL_VAL
+                    aux = decodeBool(body, i);
+                    i = aux.first;
+                    elem = aux.second;
+                    break;
+
+                case 14: // NUM_VAL
+                case 16: // FLOAT_VAL
+                    aux = decodeNumFloat(body, i);
+                    i = aux.first;
+                    elem = aux.second;
+                    break;
+
+                case 15: // INT_VAL
+                    aux = decodeInt(body, i);
+                    i = aux.first;
+                    elem = aux.second;
+                    break;
+
+                default:
+                    Log.d("FAIL type", String.valueOf(type));
+                    break;
+            }
+
+            result += elem;
+            x += 1;
+            if (x != list_len){
+                result += ", ";
+            }
+        }
+
+        result += "]";
+
+        return new Pair<Integer, String>(i, result);
+    }
+
+    private Pair<Integer, String> decodeMatrix(byte[] body, int i){
+
+        // it seems that matrices can be of types number-> int, float, num (at least, at the moment)
+
+        String result = "[[";
+        String elem = "";
+
+        int rows = ((body[i] << 8) & 0x0000ff00) | (body[i+1] & 0x000000ff);
+        i += 2;
+        int cols = ((body[i] << 8) & 0x0000ff00) | (body[i+1] & 0x000000ff);
+        i += 2;
+
+        // for each item, 1 byte for type, and then value
+        int x = 0;
+        int count_elem_current_row = 0;
+        while (x < rows * cols){
+
+            int type = 0xff & body[i];
+            i += 1;
+
+            Pair<Integer, String> aux;
+
+            switch (type) {
+
+                case 0: // NONE
+                    elem = "NONE";
+                    i += 0; // no content, next byte
+                    break;
+
+                case 14: // NUM_VAL
+                case 16: // FLOAT_VAL
+                    aux = decodeNumFloat(body, i);
+                    i = aux.first;
+                    elem = aux.second;
+                    break;
+
+                case 15: // INT_VAL
+                    aux = decodeInt(body, i);
+                    i = aux.first;
+                    elem = aux.second;
+                    break;
+
+                default:
+                    Log.d("FAIL type", String.valueOf(type));
+                    break;
+            }
+
+            result += elem;
+            count_elem_current_row += 1;
+            x += 1;
+
+            if (count_elem_current_row != rows){
+                result += ", ";
+            }
+            else{
+                count_elem_current_row = 0;
+                if (x != rows * cols){
+                    result += "], [";
+                }
+            }
+        }
+
+        result += "]]";
+
+        return new Pair<Integer, String>(i, result);
+
+    }
+
+    private Pair<Integer, String> decodeString(byte[] body, int i){
+        int len = ((body[i] << 8) & 0x0000ff00) | (body[i+1] & 0x000000ff);
+        i += 2;
+        String result = new String(Arrays.copyOfRange(body, i, i+len));
+        i += len;
+        return new Pair<Integer, String>(i, result);
+    }
+
+    private Pair<Integer, String> decodePose(byte[] body, int i){
+        String X = String.valueOf(ByteBuffer.wrap(Arrays.copyOfRange(body, i, i + 4)).getFloat());
+        i += 4;
+        String Y = String.valueOf(ByteBuffer.wrap(Arrays.copyOfRange(body, i, i + 4)).getFloat());
+        i += 4;
+        String Z = String.valueOf(ByteBuffer.wrap(Arrays.copyOfRange(body, i, i + 4)).getFloat());
+        i += 4;
+        String Rx = String.valueOf(ByteBuffer.wrap(Arrays.copyOfRange(body, i, i + 4)).getFloat());
+        i += 4;
+        String Ry = String.valueOf(ByteBuffer.wrap(Arrays.copyOfRange(body, i, i + 4)).getFloat());
+        i += 4;
+        String Rz = String.valueOf(ByteBuffer.wrap(Arrays.copyOfRange(body, i, i + 4)).getFloat());
+        i += 4;
+
+        String result = "p[" + X + ", " + Y + ", " + Z + ", " + Rx + ", " + Ry + ", " + Rz + "]";
+
+        return new Pair<Integer, String>(i, result);
+    }
+    private Pair<Integer, String> decodeBool(byte[] body, int i){
+
+        String result;
+
+        if (body[i] == 0) result = "False";
+        else result = "True";
+
+        i += 1;
+        return new Pair<Integer, String>(i, result);
+    }
+    private Pair<Integer, String> decodeNumFloat(byte[] body, int i){
+
+        String result = String.valueOf(ByteBuffer.wrap(Arrays.copyOfRange(body, i, i + 4)).getFloat());
+        i += 4;
+
+        return new Pair<Integer, String>(i, result);
+    }
+    private Pair<Integer, String> decodeInt(byte[] body, int i){
+
+        String result = String.valueOf(ByteBuffer.wrap(Arrays.copyOfRange(body, i, i + 4)).getInt());
+        i += 4;
+
+        return new Pair<Integer, String>(i, result);
     }
 
     public String[] getVarsNames(){
-        return names.toArray(new String[names.size()]);
+        return all_names.toArray(new String[all_names.size()]);
     }
 
-    public void setVarNames(LinkedList<String> names){
-        names_by_user = names;
+    public String[] getVarsValues(){
+        return all_values.toArray(new String[all_values.size()]);
     }
 
-
-
+    public void setVarNames(LinkedList<String> names_by_user){
+        this.names_by_user = names_by_user;
+    }
 }

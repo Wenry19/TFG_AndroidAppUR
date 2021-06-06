@@ -34,8 +34,8 @@ public class RobotModeData extends SubPackage {
         isProgramRunning = body[13] != 0;
         isProgramPaused = body[14] != 0;
 
-        robotMode = body[15];
-        controlMode = body[16];
+        robotMode = body[15] & 0xff;
+        controlMode = body[16] & 0xff;
 
         updateStrings();
     }

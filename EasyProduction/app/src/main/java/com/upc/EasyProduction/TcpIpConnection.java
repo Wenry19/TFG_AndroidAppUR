@@ -82,7 +82,7 @@ public class TcpIpConnection {
 
                 int len = ByteBuffer.wrap(package_size).getInt();
 
-                int type = in.read();
+                int type = in.read() & 0xff;
 
                 int current_len = len - 4 - 1;
 
@@ -119,7 +119,7 @@ public class TcpIpConnection {
             index += 4;
 
             // type of subpackage
-            int subp_type = body[index];
+            int subp_type = body[index] & 0xff;
             index += 1;
 
             if (subp_type == 0){ // Robot Mode Data
@@ -143,13 +143,16 @@ public class TcpIpConnection {
     private void decodeVarsPackages(byte[] body){
         // jump 8 bytes of timestamp
         // read byte of type var package
-        int type = body[8];
+        int type = body[8] & 0xff;
         int startIndex = ((body[9] << 8) & 0x0000ff00) | (body[10] & 0x000000ff);
+        // The startIndex value is usually 0 and I am fairly certain this will only be used when you have a very large number of variables in your program
+        // and so they can’t all be sent in one message, so allows you to again match them with the correct names.
+        // https://forum.universal-robots.com/t/primary-interface-messages/1850/4
         if (type == 0){
-            gvData.updateDataNames(Arrays.copyOfRange(body, 11, body.length));
+            gvData.updateDataNames(Arrays.copyOfRange(body, 11, body.length), startIndex);
         }
         else if (type == 1){
-            gvData.updateDataValues(Arrays.copyOfRange(body, 11, body.length));
+            gvData.updateDataValues(Arrays.copyOfRange(body, 11, body.length), startIndex);
         }
 
     }
