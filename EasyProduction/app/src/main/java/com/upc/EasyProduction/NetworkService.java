@@ -139,7 +139,7 @@ public class NetworkService extends Service {
                 }
                 if (!tcpIp.isSocketConnected()){
                     // notification instead of a toast message...
-                    toastMessage("Connection Lost: Please, reconnect");
+                    toastMessage("Not connected to robot");
                 }
                 tcpIp.close();
             }

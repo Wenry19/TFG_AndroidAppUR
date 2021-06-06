@@ -27,7 +27,8 @@
             android:layout_weight="1"
             android:onClick="onClickPlayButton"
             android:text="▶"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            app:backgroundTint="@color/button_color" />
 
         <Button
             android:id="@+id/pause_button"
@@ -37,7 +38,8 @@
             android:layout_weight="1"
             android:onClick="onClickPauseButton"
             android:text="❙❙"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            app:backgroundTint="@color/button_color" />
 
         <Button
             android:id="@+id/stop_button"
@@ -47,7 +49,8 @@
             android:layout_weight="1"
             android:onClick="onClickStopButton"
             android:text="■"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            app:backgroundTint="@color/button_color" />
 
     </LinearLayout>
 
@@ -500,6 +503,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="guide"
+        app:backgroundTint="@color/button_color"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/linearLayout2" />

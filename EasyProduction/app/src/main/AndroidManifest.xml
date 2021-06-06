@@ -12,14 +12,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EasyProduction">
-        <activity android:name=".GlobalVariablesActivity"></activity>
+        <activity android:name=".MessageActivity"
+            android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".GlobalVariablesActivity"
+            android:parentActivityName=".MainActivity"/>
 
         <service
             android:name=".NetworkService"
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".RobotStateActivity" />
+        <activity android:name=".RobotStateActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -37,7 +37,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onClickConnectButton"
-            android:text="Connect" />
+            android:text="Connect"
+            app:backgroundTint="@color/button_color" />
 
         <Button
             android:id="@+id/disconnect_button"
@@ -45,28 +46,32 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16sp"
             android:onClick="onClickDisconnectButton"
-            android:text="Disconnect" />
+            android:text="Disconnect"
+            app:backgroundTint="@color/button_color" />
 
         <Button
             android:id="@+id/state_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onClickStateButton"
-            android:text="current state" />
+            android:text="current state"
+            app:backgroundTint="@color/button_color" />
 
         <Button
             android:id="@+id/global_vars"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onClickVarsButton"
-            android:text="global vars" />
+            android:text="global vars"
+            app:backgroundTint="@color/button_color" />
 
         <Button
             android:id="@+id/msg_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onClickMsgButton"
-            android:text="SEND MESSAGE" />
+            android:text="SEND MESSAGE"
+            app:backgroundTint="@color/button_color" />
 
     </LinearLayout>
 
@@ -78,6 +83,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:text="about"
+        app:backgroundTint="@color/button_color"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

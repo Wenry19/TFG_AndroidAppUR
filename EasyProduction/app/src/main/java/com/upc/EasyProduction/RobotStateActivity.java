@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.upc.EasyProduction.DataPackages.JointData;
 import com.upc.EasyProduction.DataPackages.MasterBoardData;
@@ -56,8 +57,6 @@ public class RobotStateActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         robotIP = i.getStringExtra("ip");
-        // check ip again? checked in each connection
-
         db = new DashBoardConnection(robotIP);
     }
 
@@ -122,7 +121,7 @@ public class RobotStateActivity extends AppCompatActivity {
                     db.play();
                 }
                 else{
-                    //...
+                    Toast.makeText(RobotStateActivity.this, "Unable to send command", Toast.LENGTH_SHORT);
                 }
                 db.close();
             }
@@ -141,7 +140,7 @@ public class RobotStateActivity extends AppCompatActivity {
                     db.pause();
                 }
                 else{
-
+                    Toast.makeText(RobotStateActivity.this, "Unable to send command", Toast.LENGTH_SHORT);
                 }
                 db.close();
             }
@@ -160,7 +159,7 @@ public class RobotStateActivity extends AppCompatActivity {
                     db.stop();
                 }
                 else{
-
+                    Toast.makeText(RobotStateActivity.this, "Unable to send command", Toast.LENGTH_SHORT);
                 }
                 db.close();
             }

@@ -56,8 +56,8 @@ public class TcpIpConnection {
 
     public void close(){
         try{
-            socket.close();
-            in.close();
+            if (socket != null) socket.close();
+            if (in != null) in.close();
             socket_connected = false;
         }
         catch (Exception e){

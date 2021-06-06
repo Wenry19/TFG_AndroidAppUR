@@ -17,10 +17,7 @@ public class DashBoardConnection {
     private Socket socket;
     private PrintWriter out; // to be able to sent encoded strings
 
-    //private BufferedReader in;
-
     private boolean socket_connected = false;
-
 
     DashBoardConnection(String robotIP){
         hostname = robotIP;
@@ -44,8 +41,8 @@ public class DashBoardConnection {
 
     public void close(){
         try {
-            socket.close();
-            out.close();
+            if (socket != null) socket.close();
+            if(out != null) out.close();
         }
         catch (Exception e){
             e.printStackTrace();
@@ -71,24 +68,7 @@ public class DashBoardConnection {
         out.println("stop");
     }
 
-    public void shutdown(){
-        out.println("shutdown");
-    }
-
     public void popup(String text){
         out.println("popup " + text);
     }
-
-    public void closePopup(){
-        out.println("close popup");
-    }
-
-    public void powerOn(){
-        out.println("power on");
-    }
-
-    public void powerOff(){
-        out.println("power off");
-    }
-
 }

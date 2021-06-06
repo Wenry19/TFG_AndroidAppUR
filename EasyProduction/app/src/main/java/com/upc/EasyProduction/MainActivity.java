@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         // make sure that connection succeed
                         if (!networkService.isSocketConnected()){
-                            Toast.makeText(MainActivity.this, "Unable to connect", Toast.LENGTH_LONG).show();
+                            //Toast.makeText(MainActivity.this, "Unable to connect", Toast.LENGTH_LONG).show();
                             // The Classname. this syntax is used to refer to an outer class instance when you are using nested classes
                             // unbind and stop service!!
                             doUnbindService();
@@ -191,7 +191,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickMsgButton(View v){
-
+        Intent i = new Intent(this, MessageActivity.class);
+        i.putExtra("ip", ipText.getText().toString());
+        // our activity inherits from context
+        startActivity(i);
     }
 
     /** Defines callbacks for service binding, passed to bindService() */
