@@ -260,7 +260,7 @@ public class GVarsData {
             count_elem_current_row += 1;
             x += 1;
 
-            if (count_elem_current_row != rows){
+            if (count_elem_current_row != cols){
                 result += ", ";
             }
             else{
