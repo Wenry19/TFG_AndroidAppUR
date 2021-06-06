@@ -38,10 +38,6 @@ public class NetworkService extends Service {
 
     private boolean triedToConnect = false;
 
-    //private MediaPlayer player;
-
-    LinkedList<String> var_names = new LinkedList<String>();
-
     public class MyBinder extends Binder {
         NetworkService getService() {
             // returns this instance of service, so clients can call public methods
@@ -73,10 +69,6 @@ public class NetworkService extends Service {
                 .setContentIntent(pendingIntent)
                 .build();
         startForeground(1, notification);
-
-        /*player = MediaPlayer.create(this, Settings.System.DEFAULT_RINGTONE_URI);
-        player.setLooping(true);
-        player.start();*/
         
         startTcpIpThread();
 
@@ -141,9 +133,6 @@ public class NetworkService extends Service {
                     // receive and decode info packages of robot state
                     // when necessary notifies user
 
-                    // set vars to track
-                    tcpIp.setVarNames(var_names);
-
                     // receive package
                     tcpIp.receivePackage();
 
@@ -191,19 +180,22 @@ public class NetworkService extends Service {
     }
 
     public void addVarName(String name){
-        if (!var_names.contains(name)) { // if it already contains name, do not add again...
-            var_names.add(name);
+        if (!tcpIp.getGlobalVariablesData().getVarNamesByUser().contains(name)) { // if it already contains name, do not add again...
+            tcpIp.getGlobalVariablesData().getVarNamesByUser().add(name);
         }
     }
     public void delVarName(String name){
-        var_names.remove(name);
+        tcpIp.getGlobalVariablesData().getVarNamesByUser().remove(name);
     }
     public int getVarNamesSize(){
-        return var_names.size();
+        return tcpIp.getGlobalVariablesData().getVarNamesByUser().size();
     }
 
     public String[] getVarNamesByUser(){
-        return var_names.toArray(new String[var_names.size()]);
+        return tcpIp.getGlobalVariablesData().getVarNamesByUser().toArray(new String[tcpIp.getGlobalVariablesData().getVarNamesByUser().size()]);
     }
 
+    public void setShowAllVars(boolean showAllVars){
+        tcpIp.getGlobalVariablesData().setShowAllVars(showAllVars);
+    }
 }

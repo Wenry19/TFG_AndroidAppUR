@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private Button disconnectButton;
     private Button stateButton;
     private Button varsButton;
+    private Button msgButton;
     private EditText ipText;
 
     @Override
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         disconnectButton = findViewById(R.id.disconnect_button);
         stateButton = findViewById(R.id.state_button);
         varsButton = findViewById(R.id.global_vars);
+        msgButton = findViewById(R.id.msg_button);
         ipText = findViewById(R.id.ip_robot);
 
         if (!isMyServiceRunning(NetworkService.class)){
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
             disconnectButton.setEnabled(false);
             stateButton.setEnabled(false);
             varsButton.setEnabled(false);
+            msgButton.setEnabled(false);
         }
         else{
             if (!bound) {
@@ -85,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
             disconnectButton.setEnabled(true);
             stateButton.setEnabled(true);
             varsButton.setEnabled(true);
+            msgButton.setEnabled(true);
         }
     }
 
@@ -137,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
                             disconnectButton.setEnabled(true);
                             stateButton.setEnabled(true);
                             varsButton.setEnabled(true);
+                            msgButton.setEnabled(true);
                         }
                         doUnbindService();
                     }
@@ -182,6 +187,11 @@ public class MainActivity extends AppCompatActivity {
         disconnectButton.setEnabled(false);
         stateButton.setEnabled(false);
         varsButton.setEnabled(false);
+        msgButton.setEnabled(false);
+    }
+
+    public void onClickMsgButton(View v){
+
     }
 
     /** Defines callbacks for service binding, passed to bindService() */

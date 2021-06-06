@@ -15,6 +15,8 @@ public class GVarsData {
 
     private LinkedList<String> aux_values = new LinkedList<String>();
 
+    private boolean showAllVars = false;
+
 
     public void updateDataNames(byte[] body, int startIndex){
         // we have to be sure that all names entered by user are valid variables names
@@ -329,14 +331,47 @@ public class GVarsData {
     }
 
     public String[] getVarsNames(){
+        if (!showAllVars) {
+            // check if all the names exists
+            // order them to match the values order
+            LinkedList<String> aux = new LinkedList<String>();
+
+            for (int i = 0; i < all_names.size(); i++){
+                if (names_by_user.contains(all_names.get(i))){
+                    aux.add(all_names.get(i));
+                }
+            }
+            return aux.toArray(new String[aux.size()]);
+        }
+
         return all_names.toArray(new String[all_names.size()]);
     }
 
     public String[] getVarsValues(){
+        if (!showAllVars) {
+
+            LinkedList<String> aux = new LinkedList<String>();
+            int l;
+            if (all_names.size() > all_values.size()) l = all_values.size();
+            else l = all_names.size();
+
+            for (int i = 0; i < l; i++){
+                if (names_by_user.contains(all_names.get(i))){
+                    aux.add(all_values.get(i));
+                }
+            }
+            return aux.toArray(new String[aux.size()]);
+
+        }
+
         return all_values.toArray(new String[all_values.size()]);
     }
 
-    public void setVarNames(LinkedList<String> names_by_user){
-        this.names_by_user = names_by_user;
+    public void setShowAllVars(boolean showAllVars){
+        this.showAllVars = showAllVars;
+    }
+
+    public LinkedList<String> getVarNamesByUser(){
+        return names_by_user;
     }
 }

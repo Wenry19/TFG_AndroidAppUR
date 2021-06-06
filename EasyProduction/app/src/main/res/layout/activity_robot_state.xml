@@ -8,8 +8,12 @@
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,15 +49,6 @@
             android:text="■"
             android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/msg_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="2sp"
-            android:layout_weight="1"
-            android:onClick="onClickMsgButton"
-            android:text="MSG"
-            android:textSize="20sp" />
     </LinearLayout>
 
     <LinearLayout

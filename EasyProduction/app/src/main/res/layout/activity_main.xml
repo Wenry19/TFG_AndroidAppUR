@@ -43,6 +43,7 @@
             android:id="@+id/disconnect_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16sp"
             android:onClick="onClickDisconnectButton"
             android:text="Disconnect" />
 
@@ -59,6 +60,13 @@
             android:layout_height="wrap_content"
             android:onClick="onClickVarsButton"
             android:text="global vars" />
+
+        <Button
+            android:id="@+id/msg_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClickMsgButton"
+            android:text="SEND MESSAGE" />
 
     </LinearLayout>
 

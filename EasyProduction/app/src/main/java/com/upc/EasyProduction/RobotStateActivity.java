@@ -30,7 +30,6 @@ public class RobotStateActivity extends AppCompatActivity {
     private Button playButton;
     private Button pauseButton;
     private Button stopButton;
-    private Button msgButton;
 
     private TextView programState;
     private TextView emergProtStop;
@@ -73,7 +72,6 @@ public class RobotStateActivity extends AppCompatActivity {
         playButton = findViewById(R.id.play_button);
         pauseButton = findViewById(R.id.pause_button);
         stopButton = findViewById(R.id.stop_button);
-        msgButton = findViewById(R.id.msg_button);
 
         programState = findViewById(R.id.program_state);
         emergProtStop = findViewById(R.id.stopped);
@@ -167,10 +165,6 @@ public class RobotStateActivity extends AppCompatActivity {
                 db.close();
             }
         }).start();
-
-    }
-
-    public void onClickMsgButton(View v){
 
     }
 

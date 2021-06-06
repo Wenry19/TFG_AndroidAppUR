@@ -157,10 +157,6 @@ public class TcpIpConnection {
 
     }
 
-    public void setVarNames(LinkedList<String> names){ // to set vars to track
-        gvData.setVarNames(names);
-    }
-
     // getters
 
     public RobotModeData getRobotModeData(){

@@ -28,6 +28,9 @@ public class GlobalVariablesActivity extends AppCompatActivity {
     private EditText varName;
     private TextView vars;
     private TextView varsByUser;
+    private Button allVars;
+
+    private boolean showAllVars = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,7 @@ public class GlobalVariablesActivity extends AppCompatActivity {
         addButton = findViewById(R.id.add);
         delButton = findViewById(R.id.delete);
         varName = findViewById(R.id.var_name);
+        allVars = findViewById(R.id.all_vars);
 
 
         (new Thread(){
@@ -140,6 +144,29 @@ public class GlobalVariablesActivity extends AppCompatActivity {
 
     }
 
+    public void onClickAllVars(View v){
+
+        showAllVars =! showAllVars;
+
+        if (showAllVars){
+            allVars.setText("SHOW MY VARIABLES");
+        }
+        else{
+            allVars.setText("SHOW ALL VARIABLES");
+        }
+
+        (new Thread() {
+            @Override
+            public void run() {
+                while (networkService == null) ; // just to make sure
+
+                networkService.setShowAllVars(showAllVars);
+
+
+            }
+        }).start();
+    }
+
     private void startUpdatingValues() {
         // make sure that we are bound
 
@@ -174,15 +201,21 @@ public class GlobalVariablesActivity extends AppCompatActivity {
                             varsByUser.setText("Your variables: " + aux);
 
 
-                            if (names.length > 0 && values.length > 0 && names.length == values.length) {
+                            if (names.length > 0 && values.length > 0) {
                                 aux = "";
+                                int l;
+                                if (names.length > values.length) l = values.length;
+                                else l = names.length;
 
-                                for (int i = 0; i < names.length; i++) {
+                                for (int i = 0; i < l; i++) {
 
                                     aux += names[i] + " = " + values[i] + "\n";
 
                                 }
                                 vars.setText(aux);
+                            }
+                            else{
+                                vars.setText("");
                             }
                         }
                     });
