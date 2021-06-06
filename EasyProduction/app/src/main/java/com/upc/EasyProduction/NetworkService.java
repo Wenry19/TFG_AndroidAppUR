@@ -6,14 +6,19 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.provider.Settings;
 import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.upc.EasyProduction.DataPackages.GVarsData;
 import com.upc.EasyProduction.DataPackages.JointData;
@@ -26,8 +31,6 @@ import java.util.LinkedList;
 
 public class NetworkService extends Service {
 
-    public static final String CHANNEL_ID = "ForegroundServiceChannel";
-
     private final IBinder binder = new MyBinder();
 
     private String ip;
@@ -37,6 +40,8 @@ public class NetworkService extends Service {
     private MyThread tcpIpThread;
 
     private boolean triedToConnect = false;
+
+    private NotificationManagerCompat notificationManager;
 
     public class MyBinder extends Binder {
         NetworkService getService() {
@@ -49,6 +54,7 @@ public class NetworkService extends Service {
     public void onCreate() {
         super.onCreate();
         toastMessage("Network Service Started");
+        notificationManager = NotificationManagerCompat.from(this);
 
     }
 
@@ -58,33 +64,23 @@ public class NetworkService extends Service {
         ip = intent.getStringExtra("ip");
 
         // https://androidwave.com/foreground-service-android-example/
-        createNotificationChannel();
+
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,
                 0, notificationIntent, 0);
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+        Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_ID)
                 .setContentTitle("Easy Production Foreground Service")
                 .setContentText("Network Service Running with IP = " + ip)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentIntent(pendingIntent)
                 .build();
+
         startForeground(1, notification);
         
         startTcpIpThread();
 
         return START_NOT_STICKY;
-    }
-
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel serviceChannel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "Foreground Service Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(serviceChannel);
-        }
     }
 
     @Override
@@ -118,6 +114,30 @@ public class NetworkService extends Service {
 
     private void startTcpIpThread() {
 
+        // Create an explicit intent for an Activity in your app
+        Intent intent = new Intent(this, MainActivity.class);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+
+        NotificationCompat.Builder builderEmergStop = new NotificationCompat.Builder(this, App.CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("Warning")
+                .setContentText("Emergency Stop")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setOnlyAlertOnce(true);
+
+        NotificationCompat.Builder builderProtectStop = new NotificationCompat.Builder(this, App.CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("Warning")
+                .setContentText("Protective Stop")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setOnlyAlertOnce(true);
+
         tcpIpThread = new MyThread() {
             @Override
             public void run() {
@@ -135,6 +155,28 @@ public class NetworkService extends Service {
 
                     // receive package
                     tcpIp.receivePackage();
+
+                    // notifications
+                    // it is possible to fire a notification on another thread than the UI
+
+                    // https://stackoverflow.com/questions/31099984/android-service-thread-and-notification
+                    // https://stackoverflow.com/questions/15530293/can-noticationmanager-notify-be-called-from-a-worker-thread
+
+
+                    if (tcpIp.getRobotModeData().getIsEmergencyStopped()){
+                        // notificationId is a unique int for each notification that you must define
+                        notificationManager.notify(2, builderEmergStop.build());
+                    }
+                    else{
+                        notificationManager.cancel(2);
+                    }
+                    if (tcpIp.getRobotModeData().getIsProtectiveStopped()){
+                        // notificationId is a unique int for each notification that you must define
+                        notificationManager.notify(3, builderProtectStop.build());
+                    }
+                    else{
+                        notificationManager.cancel(3);
+                    }
 
                 }
                 if (!tcpIp.isSocketConnected()){
@@ -197,5 +239,9 @@ public class NetworkService extends Service {
 
     public void setShowAllVars(boolean showAllVars){
         tcpIp.getGlobalVariablesData().setShowAllVars(showAllVars);
+    }
+
+    public boolean getShowAllVars(){
+        return tcpIp.getGlobalVariablesData().getShowAllVars();
     }
 }

@@ -371,6 +371,10 @@ public class GVarsData {
         this.showAllVars = showAllVars;
     }
 
+    public boolean getShowAllVars(){
+        return showAllVars;
+    }
+
     public LinkedList<String> getVarNamesByUser(){
         return names_by_user;
     }

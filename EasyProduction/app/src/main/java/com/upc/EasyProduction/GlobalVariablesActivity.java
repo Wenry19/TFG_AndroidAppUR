@@ -73,6 +73,15 @@ public class GlobalVariablesActivity extends AppCompatActivity {
                         else{
                             delButton.setEnabled(true);
                         }
+
+                        showAllVars = networkService.getShowAllVars();
+
+                        if (showAllVars){
+                            allVars.setText("SHOW MY VARIABLES");
+                        }
+                        else{
+                            allVars.setText("SHOW ALL VARIABLES");
+                        }
                     }
                 });
             }
@@ -162,9 +171,10 @@ public class GlobalVariablesActivity extends AppCompatActivity {
 
                 networkService.setShowAllVars(showAllVars);
 
-
             }
         }).start();
+
+        vars.scrollTo(0, 0);
     }
 
     private void startUpdatingValues() {
