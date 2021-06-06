@@ -46,10 +46,13 @@ public class GlobalVariablesActivity extends AppCompatActivity {
         vars = findViewById(R.id.vars);
         vars.setMovementMethod(new ScrollingMovementMethod());
 
+        varsByUser = findViewById(R.id.vars_by_user);
+        varsByUser.setMovementMethod(new ScrollingMovementMethod());
+
         addButton = findViewById(R.id.add);
         delButton = findViewById(R.id.delete);
         varName = findViewById(R.id.var_name);
-        varsByUser = findViewById(R.id.vars_by_user);
+
 
         (new Thread(){
             @Override
@@ -65,14 +68,6 @@ public class GlobalVariablesActivity extends AppCompatActivity {
                         }
                         else{
                             delButton.setEnabled(true);
-                        }
-
-                        if(networkService.getVarNamesSize() >= 10){
-                            // it can not be larger than 10 but to be sure >=
-                            addButton.setEnabled(false);
-                        }
-                        else{
-                            addButton.setEnabled(true);
                         }
                     }
                 });
@@ -104,26 +99,20 @@ public class GlobalVariablesActivity extends AppCompatActivity {
 
     public void onClickAddButton(View v){
         // to be sure not blocking anything... new thread
-        (new Thread(){
-            @Override
-            public void run() {
-                while (networkService == null);
+        if (varName.getText().toString().length() > 0) {
+            (new Thread() {
+                @Override
+                public void run() {
+                    while (networkService == null) ; // just to make sure
 
-                networkService.addVarName(varName.getText().toString());
+                    networkService.addVarName(varName.getText().toString());
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (networkService.getVarNamesSize() == 10){
-                            addButton.setEnabled(false);
-                        }
-                    }
-                });
-            }
-        }).start();
+                }
+            }).start();
 
-        varName.setText("");
-        delButton.setEnabled(true);
+            varName.setText("");
+            delButton.setEnabled(true);
+        }
 
     }
     public void onClickDelButton(View v){
@@ -133,7 +122,7 @@ public class GlobalVariablesActivity extends AppCompatActivity {
             @Override
             public void run() {
                 while (networkService == null);
-                networkService.delVarName(varName.getText().toString());
+                networkService.delVarName(varName.getText().toString()); // just to make sure
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -148,7 +137,6 @@ public class GlobalVariablesActivity extends AppCompatActivity {
         }).start();
 
         varName.setText("");
-        addButton.setEnabled(true);
 
     }
 
@@ -160,7 +148,7 @@ public class GlobalVariablesActivity extends AppCompatActivity {
             public void run() {
                 super.run();
 
-                while (networkService == null) ;
+                while (networkService == null) ; // just to make sure
 
                 GVarsData gvData = networkService.getGlobalVariablesData();
 
@@ -183,17 +171,13 @@ public class GlobalVariablesActivity extends AppCompatActivity {
                                 }
                             }
 
-                            varsByUser.setText("Variables Entered by User: " + aux);
+                            varsByUser.setText("Your variables: " + aux);
 
 
-                            if (names.length > 0 && values.length > 0) { // && names.length == values.length
+                            if (names.length > 0 && values.length > 0 && names.length == values.length) {
                                 aux = "";
 
-                                int l;
-                                if (names.length > values.length) l = values.length;
-                                else l = names.length;
-
-                                for (int i = 0; i < l; i++) {
+                                for (int i = 0; i < names.length; i++) {
 
                                     aux += names[i] + " = " + values[i] + "\n";
 
