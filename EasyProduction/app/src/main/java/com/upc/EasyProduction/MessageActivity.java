@@ -54,5 +54,9 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
+    public void onClickClear(View v){
+        message.setText("");
+    }
+
 
 }

@@ -119,23 +119,30 @@ public class NetworkService extends Service {
         //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-
+        // EMERGENCY STOP NOTIFICATION
         NotificationCompat.Builder builderEmergStop = new NotificationCompat.Builder(this, App.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle("Warning")
                 .setContentText("Emergency Stop")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
                 .setOnlyAlertOnce(true);
 
+        // PROTECTIVE STOP NOTIFICATION
         NotificationCompat.Builder builderProtectStop = new NotificationCompat.Builder(this, App.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle("Warning")
                 .setContentText("Protective Stop")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
+                .setOnlyAlertOnce(true);
+
+        // PROGRAM STATE NOTIFICATION
+        NotificationCompat.Builder builderProgramState = new NotificationCompat.Builder(this, App.CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("Program State")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
                 .setOnlyAlertOnce(true);
 
         tcpIpThread = new MyThread() {
@@ -162,20 +169,30 @@ public class NetworkService extends Service {
                     // https://stackoverflow.com/questions/31099984/android-service-thread-and-notification
                     // https://stackoverflow.com/questions/15530293/can-noticationmanager-notify-be-called-from-a-worker-thread
 
-
+                    // EMERGENCY STOP
                     if (tcpIp.getRobotModeData().getIsEmergencyStopped()){
                         // notificationId is a unique int for each notification that you must define
                         notificationManager.notify(2, builderEmergStop.build());
                     }
-                    else{
-                        notificationManager.cancel(2);
-                    }
+
+                    // PROTECTIVE STOP
                     if (tcpIp.getRobotModeData().getIsProtectiveStopped()){
                         // notificationId is a unique int for each notification that you must define
                         notificationManager.notify(3, builderProtectStop.build());
                     }
-                    else{
-                        notificationManager.cancel(3);
+
+                    // PROGRAM STATE
+                    if (tcpIp.getRobotModeData().getIsProgramRunning()){
+                        builderProgramState.setContentText("Program: RUNNING");
+                        notificationManager.notify(4, builderProgramState.build());
+                    }
+                    else if (tcpIp.getRobotModeData().getIsProgramPaused()){
+                        builderProgramState.setContentText("Program: PAUSED");
+                        notificationManager.notify(4, builderProgramState.build());
+                    }
+                    else{ // stopped
+                        builderProgramState.setContentText("Program: STOPPED");
+                        notificationManager.notify(4, builderProgramState.build());
                     }
 
                 }
@@ -183,6 +200,9 @@ public class NetworkService extends Service {
                     // notification instead of a toast message...
                     toastMessage("Not connected to robot");
                 }
+                notificationManager.cancel(2);
+                notificationManager.cancel(3);
+                notificationManager.cancel(4);
                 tcpIp.close();
             }
         };

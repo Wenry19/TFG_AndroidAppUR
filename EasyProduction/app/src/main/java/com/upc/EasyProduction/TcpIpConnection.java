@@ -1,6 +1,5 @@
 package com.upc.EasyProduction;
 
-import android.util.Log;
 
 import com.upc.EasyProduction.DataPackages.GVarsData;
 import com.upc.EasyProduction.DataPackages.JointData;
@@ -8,13 +7,10 @@ import com.upc.EasyProduction.DataPackages.MasterBoardData;
 import com.upc.EasyProduction.DataPackages.RobotModeData;
 import com.upc.EasyProduction.DataPackages.ToolData;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.LinkedList;
 
 public class TcpIpConnection {
 

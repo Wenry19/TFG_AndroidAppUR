@@ -37,6 +37,13 @@
             android:onClick="onClickSend"
             android:text="SEND"
             app:backgroundTint="@color/button_color" />
+
+        <Button
+            android:id="@+id/clear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onClickClear"
+            android:text="CLEAR" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
