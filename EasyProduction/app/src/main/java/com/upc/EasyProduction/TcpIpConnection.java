@@ -1,9 +1,12 @@
 package com.upc.EasyProduction;
 
 
+import android.util.Log;
+
 import com.upc.EasyProduction.DataPackages.GVarsData;
 import com.upc.EasyProduction.DataPackages.JointData;
 import com.upc.EasyProduction.DataPackages.MasterBoardData;
+import com.upc.EasyProduction.DataPackages.PopUpData;
 import com.upc.EasyProduction.DataPackages.RobotModeData;
 import com.upc.EasyProduction.DataPackages.ToolData;
 
@@ -30,6 +33,7 @@ public class TcpIpConnection {
     private ToolData tData = new ToolData();
     private MasterBoardData mbData = new MasterBoardData();
     private GVarsData gvData = new GVarsData();
+    private PopUpData puData = new PopUpData();
 
 
     TcpIpConnection(String robotIP){
@@ -90,6 +94,9 @@ public class TcpIpConnection {
                     decodeSubpackages(body);
                 } else if (type == 25) {
                     decodeVarsPackages(body);
+                }
+                else if (type == 20){
+                    decodePopUpPackage(body);
                 }
             }
             else{
@@ -153,6 +160,18 @@ public class TcpIpConnection {
 
     }
 
+    private void decodePopUpPackage(byte[] body){
+        // jump 8 bytes of timestamp
+        // jump 1 byte of source
+        int type = body[9] & 0xff;
+
+        //Log.d("POPUP", "POPUP MESSAGE RECEIVED " + String.valueOf(type));
+
+        if (type == 9){ // pop up message
+            puData.updateData(Arrays.copyOfRange(body, 10, body.length));
+        }
+    }
+
     // getters
 
     public RobotModeData getRobotModeData(){
@@ -169,5 +188,8 @@ public class TcpIpConnection {
     }
     public GVarsData getGlobalVariablesData(){
         return gvData;
+    }
+    public PopUpData getPopUpData(){
+        return puData;
     }
 }

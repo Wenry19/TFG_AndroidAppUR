@@ -378,4 +378,7 @@ public class GVarsData {
     public LinkedList<String> getVarNamesByUser(){
         return names_by_user;
     }
+    public void setVarNamesByUser(LinkedList<String> names_by_user){
+        this.names_by_user = names_by_user;
+    }
 }

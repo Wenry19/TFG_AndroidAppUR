@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private Button stateButton;
     private Button varsButton;
     private Button msgButton;
+    private Button aboutButton;
     private EditText ipText;
 
     @Override
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         stateButton = findViewById(R.id.state_button);
         varsButton = findViewById(R.id.global_vars);
         msgButton = findViewById(R.id.msg_button);
+        aboutButton = findViewById(R.id.about);
         ipText = findViewById(R.id.ip_robot);
 
         if (!isMyServiceRunning(NetworkService.class)){
@@ -194,6 +196,11 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(this, MessageActivity.class);
         i.putExtra("ip", ipText.getText().toString());
         // our activity inherits from context
+        startActivity(i);
+    }
+
+    public void onClickAboutButton(View v){
+        Intent i = new Intent(this, AboutActivity.class);
         startActivity(i);
     }
 

@@ -5,7 +5,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -14,9 +16,13 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
@@ -27,7 +33,11 @@ import com.upc.EasyProduction.DataPackages.RobotModeData;
 import com.upc.EasyProduction.DataPackages.ToolData;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Set;
 
 public class NetworkService extends Service {
 
@@ -43,6 +53,10 @@ public class NetworkService extends Service {
 
     private NotificationManagerCompat notificationManager;
 
+    private SharedPreferences sharedPref;
+
+    //private int last_program_state = -1; // 0 running, 1 paused, 2 stopped
+
     public class MyBinder extends Binder {
         NetworkService getService() {
             // returns this instance of service, so clients can call public methods
@@ -53,8 +67,11 @@ public class NetworkService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
         toastMessage("Network Service Started");
+
         notificationManager = NotificationManagerCompat.from(this);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
     }
 
@@ -62,6 +79,7 @@ public class NetworkService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         ip = intent.getStringExtra("ip");
+        tcpIp = new TcpIpConnection(ip);
 
         // https://androidwave.com/foreground-service-android-example/
 
@@ -71,12 +89,16 @@ public class NetworkService extends Service {
         Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_ID)
                 .setContentTitle("Easy Production Foreground Service")
                 .setContentText("Network Service Running with IP = " + ip)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentIntent(pendingIntent)
                 .build();
 
         startForeground(1, notification);
+
+        // load sharedPreferences
+
+        loadSharedPreferences();
         
         startTcpIpThread();
 
@@ -98,6 +120,42 @@ public class NetworkService extends Service {
         // kill threads
 
         tcpIpThread.myStop();
+
+        // save names by user in sharedPreferences
+
+        updateSharedPreferences();
+    }
+
+    private void updateSharedPreferences(){
+
+        Set<String> aux = new HashSet<String>(tcpIp.getGlobalVariablesData().getVarNamesByUser());
+        Log.d("updateSP", String.valueOf(aux.size()));
+
+        (new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                sharedPref.edit().putStringSet("UserVars", aux).commit();
+            }
+        }).start();
+
+        /*
+        apply() changes the in-memory SharedPreferences object immediately but writes the updates to disk asynchronously.
+        Alternatively, you can use commit() to write the data to disk synchronously.
+        But because commit() is synchronous, you should avoid calling it from your main thread because it could pause your UI rendering.
+         */
+    }
+
+    private void loadSharedPreferences(){
+
+        Set<String> aux = sharedPref.getStringSet("UserVars", new HashSet<String>());
+
+        LinkedList<String> var = new LinkedList<String>(aux);
+
+        Log.d("loadSP", String.valueOf(var.size()));
+
+        tcpIp.getGlobalVariablesData().setVarNamesByUser(var);
+
     }
 
     // https://stackoverflow.com/questions/38239291/showing-a-toast-notification-from-a-service
@@ -138,19 +196,24 @@ public class NetworkService extends Service {
                 .setOnlyAlertOnce(true);
 
         // PROGRAM STATE NOTIFICATION
-        NotificationCompat.Builder builderProgramState = new NotificationCompat.Builder(this, App.CHANNEL_ID)
+        /*NotificationCompat.Builder builderProgramState = new NotificationCompat.Builder(this, App.CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle("Program State")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
-                .setOnlyAlertOnce(true);
+                .setOnlyAlertOnce(false);*/
+
+        // POPUP NOTIFICATION
+        NotificationCompat.Builder builderPopUp = new NotificationCompat.Builder(this, App.CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setOnlyAlertOnce(false);
 
         tcpIpThread = new MyThread() {
             @Override
             public void run() {
                 super.run();
-
-                tcpIp = new TcpIpConnection(ip);
 
                 tcpIp.connect();
                 triedToConnect = true; // now we can check in MainActivity if the socket connection was successful
@@ -182,17 +245,38 @@ public class NetworkService extends Service {
                     }
 
                     // PROGRAM STATE
-                    if (tcpIp.getRobotModeData().getIsProgramRunning()){
+                    /*if (tcpIp.getRobotModeData().getIsProgramRunning() && last_program_state != 0){
                         builderProgramState.setContentText("Program: RUNNING");
                         notificationManager.notify(4, builderProgramState.build());
+                        last_program_state = 0;
                     }
-                    else if (tcpIp.getRobotModeData().getIsProgramPaused()){
+                    else if (tcpIp.getRobotModeData().getIsProgramPaused() && last_program_state != 1){
                         builderProgramState.setContentText("Program: PAUSED");
                         notificationManager.notify(4, builderProgramState.build());
+                        last_program_state = 1;
                     }
                     else{ // stopped
-                        builderProgramState.setContentText("Program: STOPPED");
-                        notificationManager.notify(4, builderProgramState.build());
+                        if (last_program_state != 2) {
+                            builderProgramState.setContentText("Program: STOPPED");
+                            notificationManager.notify(4, builderProgramState.build());
+                            last_program_state = 2;
+                        }
+                    }*/
+
+                    // POPUP
+                    if (tcpIp.getPopUpData().getPendingNotification()){
+
+                        //Log.d("notifyPOPUP", "hola");
+
+                        tcpIp.getPopUpData().setPendingNotification(false);
+
+                        builderPopUp.setContentTitle(tcpIp.getPopUpData().getTitle());
+                        builderPopUp.setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(tcpIp.getPopUpData().getMessage()));
+
+                        //builderPopUp.setContentText(tcpIp.getPopUpData().getMessage());
+
+                        notificationManager.notify(5, builderPopUp.build());
                     }
 
                 }
@@ -203,6 +287,7 @@ public class NetworkService extends Service {
                 notificationManager.cancel(2);
                 notificationManager.cancel(3);
                 notificationManager.cancel(4);
+                notificationManager.cancel(5);
                 tcpIp.close();
             }
         };
@@ -241,6 +326,8 @@ public class NetworkService extends Service {
         return tcpIp.getGlobalVariablesData();
     }
 
+    // __________
+
     public void addVarName(String name){
         if (!tcpIp.getGlobalVariablesData().getVarNamesByUser().contains(name)) { // if it already contains name, do not add again...
             tcpIp.getGlobalVariablesData().getVarNamesByUser().add(name);
@@ -249,6 +336,7 @@ public class NetworkService extends Service {
     public void delVarName(String name){
         tcpIp.getGlobalVariablesData().getVarNamesByUser().remove(name);
     }
+
     public int getVarNamesSize(){
         return tcpIp.getGlobalVariablesData().getVarNamesByUser().size();
     }
@@ -256,6 +344,8 @@ public class NetworkService extends Service {
     public String[] getVarNamesByUser(){
         return tcpIp.getGlobalVariablesData().getVarNamesByUser().toArray(new String[tcpIp.getGlobalVariablesData().getVarNamesByUser().size()]);
     }
+
+    // __________
 
     public void setShowAllVars(boolean showAllVars){
         tcpIp.getGlobalVariablesData().setShowAllVars(showAllVars);

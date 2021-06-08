@@ -31,6 +31,7 @@ public class RobotStateActivity extends AppCompatActivity {
     private Button playButton;
     private Button pauseButton;
     private Button stopButton;
+    private Button guideButton;
 
     private TextView programState;
     private TextView emergProtStop;
@@ -71,6 +72,7 @@ public class RobotStateActivity extends AppCompatActivity {
         playButton = findViewById(R.id.play_button);
         pauseButton = findViewById(R.id.pause_button);
         stopButton = findViewById(R.id.stop_button);
+        guideButton = findViewById(R.id.guide);
 
         programState = findViewById(R.id.program_state);
         emergProtStop = findViewById(R.id.stopped);
@@ -165,6 +167,11 @@ public class RobotStateActivity extends AppCompatActivity {
             }
         }).start();
 
+    }
+
+    public void onClickGuideButton(View v){
+        Intent i = new Intent(this, GuideActivity.class);
+        startActivity(i);
     }
 
     private void startUpdatingValues(){

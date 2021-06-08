@@ -502,6 +502,7 @@
         android:id="@+id/guide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="onClickGuideButton"
         android:text="guide"
         app:backgroundTint="@color/button_color"
         app:layout_constraintBottom_toBottomOf="@+id/linearLayout2"
