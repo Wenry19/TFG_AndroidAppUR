@@ -67,8 +67,8 @@ public class JointData extends SubPackage {
             // each joint has 8+8+8+4+4+4+4+1 = 41 bytes
 
             Double aux_q_actual = (ByteBuffer.wrap(Arrays.copyOfRange(body, (i * 41), (i * 41) + 8)).getDouble()) * 360/(2*Math.PI); // rad to º
-            Float aux_I_actual = ByteBuffer.wrap(Arrays.copyOfRange(body, (i * 41) + 24, (i * 41) + 24 + 4)).getFloat();
-            Float aux_V_actual = ByteBuffer.wrap(Arrays.copyOfRange(body, (i * 41) + 28, (i * 41) + 28 + 4)).getFloat();
+            Float aux_I_actual = Math.abs(ByteBuffer.wrap(Arrays.copyOfRange(body, (i * 41) + 24, (i * 41) + 24 + 4)).getFloat()); // eye abs
+            Float aux_V_actual = Math.abs(ByteBuffer.wrap(Arrays.copyOfRange(body, (i * 41) + 28, (i * 41) + 28 + 4)).getFloat()); // eye abs
             Float aux_T_motor = ByteBuffer.wrap(Arrays.copyOfRange(body, (i * 41) + 32, (i * 41) + 32 + 4)).getFloat();
             int aux_jointMode = body[i*41 + 40] & 0xff;
 
