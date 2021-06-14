@@ -31,27 +31,27 @@ public class JointData extends SubPackage {
 
     // wirst1
 
-    private double wirst1_q_actual = -1; // 64 bits -> 8 bytes
-    private float wirst1_I_actual = -1; // 4 bytes
-    private float wirst1_V_actual = -1; // 4 bytes
-    private float wirst1_T_motor = -1; // 4 bytes
-    private int wirst1_jointMode = -1; // 1 byte
+    private double wrist1_q_actual = -1; // 64 bits -> 8 bytes
+    private float wrist1_I_actual = -1; // 4 bytes
+    private float wrist1_V_actual = -1; // 4 bytes
+    private float wrist1_T_motor = -1; // 4 bytes
+    private int wrist1_jointMode = -1; // 1 byte
 
     // wirst2
 
-    private double wirst2_q_actual = -1; // 64 bits -> 8 bytes
-    private float wirst2_I_actual = -1; // 4 bytes
-    private float wirst2_V_actual = -1; // 4 bytes
-    private float wirst2_T_motor = -1; // 4 bytes
-    private int wirst2_jointMode = -1; // 1 byte
+    private double wrist2_q_actual = -1; // 64 bits -> 8 bytes
+    private float wrist2_I_actual = -1; // 4 bytes
+    private float wrist2_V_actual = -1; // 4 bytes
+    private float wrist2_T_motor = -1; // 4 bytes
+    private int wrist2_jointMode = -1; // 1 byte
 
     // wirst3
 
-    private double wirst3_q_actual = -1; // 64 bits -> 8 bytes
-    private float wirst3_I_actual = -1; // 4 bytes
-    private float wirst3_V_actual = -1; // 4 bytes
-    private float wirst3_T_motor = -1; // 4 bytes
-    private int wirst3_jointMode = -1; // 1 byte
+    private double wrist3_q_actual = -1; // 64 bits -> 8 bytes
+    private float wrist3_I_actual = -1; // 4 bytes
+    private float wrist3_V_actual = -1; // 4 bytes
+    private float wrist3_T_motor = -1; // 4 bytes
+    private int wrist3_jointMode = -1; // 1 byte
 
     public JointData(){
         this.type = 1;
@@ -95,25 +95,25 @@ public class JointData extends SubPackage {
                     elbow_jointMode = aux_jointMode;
                     break;
                 case 3:
-                    wirst1_q_actual = aux_q_actual;
-                    wirst1_I_actual = aux_I_actual;
-                    wirst1_V_actual = aux_V_actual;
-                    wirst1_T_motor = aux_T_motor;
-                    wirst1_jointMode = aux_jointMode;
+                    wrist1_q_actual = aux_q_actual;
+                    wrist1_I_actual = aux_I_actual;
+                    wrist1_V_actual = aux_V_actual;
+                    wrist1_T_motor = aux_T_motor;
+                    wrist1_jointMode = aux_jointMode;
                     break;
                 case 4:
-                    wirst2_q_actual = aux_q_actual;
-                    wirst2_I_actual = aux_I_actual;
-                    wirst2_V_actual = aux_V_actual;
-                    wirst2_T_motor = aux_T_motor;
-                    wirst2_jointMode = aux_jointMode;
+                    wrist2_q_actual = aux_q_actual;
+                    wrist2_I_actual = aux_I_actual;
+                    wrist2_V_actual = aux_V_actual;
+                    wrist2_T_motor = aux_T_motor;
+                    wrist2_jointMode = aux_jointMode;
                     break;
                 case 5:
-                    wirst3_q_actual = aux_q_actual;
-                    wirst3_I_actual = aux_I_actual;
-                    wirst3_V_actual = aux_V_actual;
-                    wirst3_T_motor = aux_T_motor;
-                    wirst3_jointMode = aux_jointMode;
+                    wrist3_q_actual = aux_q_actual;
+                    wrist3_I_actual = aux_I_actual;
+                    wrist3_V_actual = aux_V_actual;
+                    wrist3_T_motor = aux_T_motor;
+                    wrist3_jointMode = aux_jointMode;
             }
         }
     }
@@ -170,51 +170,51 @@ public class JointData extends SubPackage {
     }
     // WIRST1
     public String getWirst1QactualStr(){
-        return String.format("%.2f", wirst1_q_actual);
+        return String.format("%.2f", wrist1_q_actual);
     }
     public String getWirst1IactualStr(){
-        return String.format("%.2f", wirst1_I_actual);
+        return String.format("%.2f", wrist1_I_actual);
     }
     public String getWirst1VactualStr(){
-        return String.format("%.2f", wirst1_V_actual);
+        return String.format("%.2f", wrist1_V_actual);
     }
     public String getWirst1TmotorStr(){
-        return String.format("%.2f", wirst1_T_motor);
+        return String.format("%.2f", wrist1_T_motor);
     }
     public String getWirst1JointModeStr(){
-        return String.valueOf(wirst1_jointMode);
+        return String.valueOf(wrist1_jointMode);
     }
     // WIRST2
     public String getWirst2QactualStr(){
-        return String.format("%.2f", wirst2_q_actual);
+        return String.format("%.2f", wrist2_q_actual);
     }
     public String getWirst2IactualStr(){
-        return String.format("%.2f", wirst2_I_actual);
+        return String.format("%.2f", wrist2_I_actual);
     }
     public String getWirst2VactualStr(){
-        return String.format("%.2f", wirst2_V_actual);
+        return String.format("%.2f", wrist2_V_actual);
     }
     public String getWirst2TmotorStr(){
-        return String.format("%.2f", wirst2_T_motor);
+        return String.format("%.2f", wrist2_T_motor);
     }
     public String getWirst2JointModeStr(){
-        return String.valueOf(wirst2_jointMode);
+        return String.valueOf(wrist2_jointMode);
     }
     // WIRST3
     public String getWirst3QactualStr(){
-        return String.format("%.2f", wirst3_q_actual);
+        return String.format("%.2f", wrist3_q_actual);
     }
     public String getWirst3IactualStr(){
-        return String.format("%.2f", wirst3_I_actual);
+        return String.format("%.2f", wrist3_I_actual);
     }
     public String getWirst3VactualStr(){
-        return String.format("%.2f", wirst3_V_actual);
+        return String.format("%.2f", wrist3_V_actual);
     }
     public String getWirst3TmotorStr(){
-        return String.format("%.2f", wirst3_T_motor);
+        return String.format("%.2f", wrist3_T_motor);
     }
     public String getWirst3JointModeStr(){
-        return String.valueOf(wirst3_jointMode);
+        return String.valueOf(wrist3_jointMode);
     }
 
 }

@@ -269,7 +269,7 @@
                     android:layout_marginRight="4sp"
                     android:layout_marginBottom="-8sp"
                     android:gravity="center"
-                    android:text="WIRST1"
+                    android:text="WRIST1"
                     android:textStyle="bold" />
 
                 <LinearLayout
@@ -320,7 +320,7 @@
                     android:layout_marginRight="4sp"
                     android:layout_marginBottom="-8sp"
                     android:gravity="center"
-                    android:text="WIRST2"
+                    android:text="WRIST2"
                     android:textStyle="bold" />
 
                 <LinearLayout
@@ -365,7 +365,7 @@
                     android:layout_marginRight="4sp"
                     android:layout_marginBottom="-8sp"
                     android:gravity="center"
-                    android:text="WIRST3"
+                    android:text="WRIST3"
                     android:textStyle="bold" />
 
                 <LinearLayout
