@@ -1,9 +1,5 @@
-package com.upc.EasyProduction;
+package com.upc.EasyProduction.Communication;
 
-import android.widget.Toast;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 

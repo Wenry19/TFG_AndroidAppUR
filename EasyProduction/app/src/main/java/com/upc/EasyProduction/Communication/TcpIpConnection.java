@@ -1,7 +1,4 @@
-package com.upc.EasyProduction;
-
-
-import android.util.Log;
+package com.upc.EasyProduction.Communication;
 
 import com.upc.EasyProduction.DataPackages.GVarsData;
 import com.upc.EasyProduction.DataPackages.JointData;

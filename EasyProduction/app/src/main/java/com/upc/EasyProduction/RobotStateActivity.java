@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.upc.EasyProduction.Communication.DashBoardConnection;
 import com.upc.EasyProduction.DataPackages.JointData;
 import com.upc.EasyProduction.DataPackages.MasterBoardData;
 import com.upc.EasyProduction.DataPackages.RobotModeData;
@@ -43,9 +44,9 @@ public class RobotStateActivity extends AppCompatActivity {
     private TextView base;
     private TextView shoulder;
     private TextView elbow;
-    private TextView wirst1;
-    private TextView wirst2;
-    private TextView wirst3;
+    private TextView wrist1;
+    private TextView wrist2;
+    private TextView wrist3;
     private TextView tool;
     private TextView master_board;
 
@@ -84,9 +85,9 @@ public class RobotStateActivity extends AppCompatActivity {
         base = findViewById(R.id.base);
         shoulder = findViewById(R.id.shoulder);
         elbow = findViewById(R.id.elbow);
-        wirst1 = findViewById(R.id.wirst1);
-        wirst2 = findViewById(R.id.wirst2);
-        wirst3 = findViewById(R.id.wirst3);
+        wrist1 = findViewById(R.id.wirst1);
+        wrist2 = findViewById(R.id.wirst2);
+        wrist3 = findViewById(R.id.wirst3);
         tool = findViewById(R.id.tool);
         master_board = findViewById(R.id.master_board);
 
@@ -237,15 +238,15 @@ public class RobotStateActivity extends AppCompatActivity {
 
                             aux = jData.getWirst1QactualStr() +"º\n" + jData.getWirst1VactualStr() + "V\n"
                                     + jData.getWirst1IactualStr() + "A\n" + jData.getWirst1TmotorStr() + "ºC\n" + jData.getWirst1JointModeStr();
-                            wirst1.setText(aux);
+                            wrist1.setText(aux);
 
                             aux = jData.getWirst2QactualStr() +"º\n" + jData.getWirst2VactualStr() + "V\n"
                                     + jData.getWirst2IactualStr() + "A\n" + jData.getWirst2TmotorStr() + "ºC\n" + jData.getWirst2JointModeStr();
-                            wirst2.setText(aux);
+                            wrist2.setText(aux);
 
                             aux = jData.getWirst3QactualStr() +"º\n" + jData.getWirst3VactualStr() + "V\n"
                                     + jData.getWirst3IactualStr() + "A\n" + jData.getWirst3TmotorStr() + "ºC\n" + jData.getWirst3JointModeStr();
-                            wirst3.setText(aux);
+                            wrist3.setText(aux);
 
                             // TOOL DATA
 
