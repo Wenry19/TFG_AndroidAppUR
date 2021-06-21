@@ -33,7 +33,7 @@ public class TcpIpConnection {
     private PopUpData puData = new PopUpData();
 
 
-    TcpIpConnection(String robotIP){
+    public TcpIpConnection(String robotIP){
         hostname = robotIP;
     }
 

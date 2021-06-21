@@ -13,7 +13,6 @@ import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.upc.EasyProduction.Communication.DashBoardConnection;
 import com.upc.EasyProduction.DataPackages.JointData;
@@ -123,9 +122,6 @@ public class RobotStateActivity extends AppCompatActivity {
                 if (db.isSocketConnected()) {
                     db.play();
                 }
-                else{
-                    Toast.makeText(RobotStateActivity.this, "Unable to send command", Toast.LENGTH_SHORT);
-                }
                 db.close();
             }
         }).start();
@@ -142,9 +138,6 @@ public class RobotStateActivity extends AppCompatActivity {
                 if (db.isSocketConnected()) {
                     db.pause();
                 }
-                else{
-                    Toast.makeText(RobotStateActivity.this, "Unable to send command", Toast.LENGTH_SHORT);
-                }
                 db.close();
             }
         }).start();
@@ -160,9 +153,6 @@ public class RobotStateActivity extends AppCompatActivity {
                 db.connect();
                 if (db.isSocketConnected()) {
                     db.stop();
-                }
-                else{
-                    Toast.makeText(RobotStateActivity.this, "Unable to send command", Toast.LENGTH_SHORT);
                 }
                 db.close();
             }

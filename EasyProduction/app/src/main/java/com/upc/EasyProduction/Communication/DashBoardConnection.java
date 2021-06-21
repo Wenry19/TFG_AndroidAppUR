@@ -15,7 +15,7 @@ public class DashBoardConnection {
 
     private boolean socket_connected = false;
 
-    DashBoardConnection(String robotIP){
+    public DashBoardConnection(String robotIP){
         hostname = robotIP;
     }
 

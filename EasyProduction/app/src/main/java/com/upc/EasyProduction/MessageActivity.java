@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.upc.EasyProduction.Communication.DashBoardConnection;
 
@@ -45,9 +44,6 @@ public class MessageActivity extends AppCompatActivity {
                 db.connect();
                 if (db.isSocketConnected()) {
                     db.popup(message.getText().toString());
-                }
-                else{
-                    Toast.makeText(MessageActivity.this, "Unable to send command", Toast.LENGTH_SHORT);
                 }
                 db.close();
             }
