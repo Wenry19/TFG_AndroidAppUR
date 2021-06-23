@@ -10,9 +10,19 @@ import android.widget.EditText;
 
 import com.upc.EasyProduction.Communication.DashBoardConnection;
 
+/**
+ * This class implements the MessageActivity.
+ * @author Enric Lamarca Ferrés.
+ */
 public class MessageActivity extends AppCompatActivity {
 
+    /**
+     * Instance of DashBoardConnection.
+     */
     private DashBoardConnection db;
+    /**
+     * Robot IP.
+     */
     private String robotIP;
 
     private Button send;

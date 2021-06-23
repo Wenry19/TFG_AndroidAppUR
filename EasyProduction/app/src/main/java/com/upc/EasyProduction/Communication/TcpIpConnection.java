@@ -12,31 +12,73 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+/**
+ * This class manages the Primary Interface connection.
+ * @author Enric Lamarca Ferrés
+ */
 public class TcpIpConnection {
 
+    /**
+     * Robot IP.
+     */
     private final String hostname; // robot IP
-
+    /**
+     * Port of Primary interface.
+     */
     private final int portNumber = 30001; // primary client connection via TCP/IP
 
+    /**
+     * Socket that connects to robot.
+     */
     private Socket socket;
+    /**
+     * InputStream that receives the data sent by the robot.
+     */
     private InputStream in;
-
+    /**
+     * boolean that indicates if the connection is established or has been lost.
+     */
     private boolean socket_connected = false;
 
     // subpackages
-
+    /**
+     * Instance of RobotModeData that manages the packages related with the robot mode.
+     */
     private RobotModeData rmData = new RobotModeData();
+    /**
+     * Instance of JointData that manages the packages related with the joints of the robot.
+     */
     private JointData jData = new JointData();
+    /**
+     * Instance of ToolData that manages the packages related with the tool of the robot.
+     */
     private ToolData tData = new ToolData();
+    /**
+     * Instance of MasterBoardData that manages the packages related with the master board of the robot.
+     */
     private MasterBoardData mbData = new MasterBoardData();
+
+    // packages
+    /**
+     * Instance of GVarsData that manages the packages related with the globals variables of the program that is executing the robot.
+     */
     private GVarsData gvData = new GVarsData();
+    /**
+     * Instance of PopUpData that manages the packages related with the popups.
+     */
     private PopUpData puData = new PopUpData();
 
-
+    /**
+     * Constructor.
+     * @param robotIP IP of the robot.
+     */
     public TcpIpConnection(String robotIP){
         hostname = robotIP;
     }
 
+    /**
+     * Connects via socket to robot.
+     */
     public void connect(){
         try {
             socket = new Socket(hostname, portNumber);
@@ -51,6 +93,9 @@ public class TcpIpConnection {
         }
     }
 
+    /**
+     * Closes socket connection.
+     */
     public void close(){
         try{
             if (socket != null) socket.close();
@@ -63,10 +108,17 @@ public class TcpIpConnection {
         }
     }
 
+    /**
+     * Tells whether the socket connection is established or has been lost.
+     * @return boolean that indicates if the connection is established or has been lost.
+     */
     public boolean isSocketConnected(){
         return socket_connected;
     }
 
+    /**
+     * Receive and decodes one package sent by the robot.
+     */
     public void receivePackage(){
         try {
 
@@ -109,6 +161,10 @@ public class TcpIpConnection {
         }
     }
 
+    /**
+     * Decodes subpackages of robot state package.
+     * @param body body of robot state package that contains the subpackages.
+     */
     private void decodeSubpackages(byte[] body){
         int index = 0;
 
@@ -140,6 +196,10 @@ public class TcpIpConnection {
         }
     }
 
+    /**
+     * Decodes the packages related with the global variables of the program that is being executed by the robot.
+     * @param body body of the package to decode.
+     */
     private void decodeVarsPackages(byte[] body){
         // jump 8 bytes of timestamp
         // read byte of type var package
@@ -157,6 +217,10 @@ public class TcpIpConnection {
 
     }
 
+    /**
+     * Decodes the package that is sent when the robot executes a popup.
+     * @param body body of the package to decode.
+     */
     private void decodePopUpPackage(byte[] body){
         // jump 8 bytes of timestamp
         // jump 1 byte of source
@@ -171,21 +235,45 @@ public class TcpIpConnection {
 
     // getters
 
+    /**
+     * Getter of the instance RobotModeData.
+     * @return the instance of RobotModeData.
+     */
     public RobotModeData getRobotModeData(){
         return rmData;
     }
+    /**
+     * Getter of the instance JointData.
+     * @return the instance of JointData.
+     */
     public JointData getJointData(){
         return jData;
     }
+    /**
+     * Getter of the instance ToolData.
+     * @return the instance of ToolData.
+     */
     public ToolData getToolData(){
         return tData;
     }
+    /**
+     * Getter of the instance MasterBoardData.
+     * @return the instance of MasterBoardData.
+     */
     public MasterBoardData getMasterBoardData(){
         return mbData;
     }
+    /**
+     * Getter of the instance GVarsData.
+     * @return the instance of GVarsData.
+     */
     public GVarsData getGlobalVariablesData(){
         return gvData;
     }
+    /**
+     * Getter of the instance PopUpData.
+     * @return the instance of PopUpData.
+     */
     public PopUpData getPopUpData(){
         return puData;
     }

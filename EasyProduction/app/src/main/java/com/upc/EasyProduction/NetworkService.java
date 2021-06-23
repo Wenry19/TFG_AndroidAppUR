@@ -27,20 +27,39 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+/**
+ * This class implements the NetworkService.
+ * @author Enric Lamarca Ferrés.
+ */
 public class NetworkService extends Service {
 
     private final IBinder binder = new MyBinder();
 
+    /**
+     * Robot IP.
+     */
     private String ip;
 
+    /**
+     * Instance of class TcpIpConnection.
+     */
     private TcpIpConnection tcpIp;
 
+    /**
+     * Thread that receives and decodes the packages.
+     */
     private MyThread tcpIpThread;
 
+    /**
+     * Boolean that indicates if the service tried to connect with the robot (in the auxiliary thread).
+     */
     private boolean triedToConnect = false;
 
     private NotificationManagerCompat notificationManager;
 
+    /**
+     * To store in the device memory the global variable names introduced by the user.
+     */
     private SharedPreferences sharedPref;
 
     //private int last_program_state = -1; // 0 running, 1 paused, 2 stopped
@@ -114,6 +133,9 @@ public class NetworkService extends Service {
         updateSharedPreferences();
     }
 
+    /**
+     * Updates SharedPreferences.
+     */
     private void updateSharedPreferences(){
 
         Set<String> aux = new HashSet<String>(tcpIp.getGlobalVariablesData().getVarNamesByUser());
@@ -134,6 +156,9 @@ public class NetworkService extends Service {
          */
     }
 
+    /**
+     * Loads SharedPreferences.
+     */
     private void loadSharedPreferences(){
 
         Set<String> aux = sharedPref.getStringSet("UserVars", new HashSet<String>());
@@ -158,6 +183,10 @@ public class NetworkService extends Service {
         });
     }
 
+    /**
+     * Starts the thread that connects to the robot and receive and decode the packages sent.
+     * Also, manages the notifications depending on the data received.
+     */
     private void startTcpIpThread() {
 
         // Create an explicit intent for an Activity in your app
@@ -286,59 +315,115 @@ public class NetworkService extends Service {
 
     // public methods for clients
 
+    /**
+     *
+     * @return boolean that indicates if the socket is connected.
+     */
     public boolean isSocketConnected() {
         return tcpIp.isSocketConnected();
     }
 
+    /**
+     *
+     * @return boolean that indicates if the service tried to connect with the robot (in the auxiliary thread).
+     */
     public boolean doWeTryToConnect(){
         return triedToConnect;
     }
 
+    /**
+     * Getter of the robot IP.
+     * @return robot IP.
+     */
     public String getIP(){
         return ip;
     }
 
+    /**
+     * Getter of the instance RobotModeData.
+     * @return the instance RobotModeData.
+     */
     public RobotModeData getRobotModeData(){
         return tcpIp.getRobotModeData();
     }
+    /**
+     * Getter of the instance JointData.
+     * @return the instance JointData.
+     */
     public JointData getJointData(){
         return tcpIp.getJointData();
     }
+    /**
+     * Getter of the instance ToolData.
+     * @return the instance ToolData.
+     */
     public ToolData getToolData(){
         return tcpIp.getToolData();
     }
+    /**
+     * Getter of the instance MasterBoardData.
+     * @return the instance MasterBoardData.
+     */
     public MasterBoardData getMasterBoardData(){
         return tcpIp.getMasterBoardData();
     }
+    /**
+     * Getter of the instance GVarsData.
+     * @return the instance GVarsData.
+     */
     public GVarsData getGlobalVariablesData(){
         return tcpIp.getGlobalVariablesData();
     }
 
     // __________
 
+    /**
+     * Adds a global variable name introduced by the user.
+     * @param name global variable name introduced by the user.
+     */
     public void addVarName(String name){
         if (!tcpIp.getGlobalVariablesData().getVarNamesByUser().contains(name)) { // if it already contains name, do not add again...
             tcpIp.getGlobalVariablesData().getVarNamesByUser().add(name);
         }
     }
+
+    /**
+     * Deletes a global variable name introduced by the user.
+     * @param name global variable name introduced by the user.
+     */
     public void delVarName(String name){
         tcpIp.getGlobalVariablesData().getVarNamesByUser().remove(name);
     }
 
+    /**
+     * Getter of the size of the list that contains the global variable names introduced by the user.
+     * @return the size of the list that contains the global variable names introduced by the user.
+     */
     public int getVarNamesSize(){
         return tcpIp.getGlobalVariablesData().getVarNamesByUser().size();
     }
 
+    /**
+     * Getter of the list that contains the global variables names introduced by the user.
+     * @return the list that contains the global variables names introduced by the user.
+     */
     public String[] getVarNamesByUser(){
         return tcpIp.getGlobalVariablesData().getVarNamesByUser().toArray(new String[tcpIp.getGlobalVariablesData().getVarNamesByUser().size()]);
     }
 
     // __________
 
+    /**
+     * Setter of the boolean that indicates if the user wants to see all global variables.
+     * @param showAllVars boolean that indicates if the user wants to see all global variables.
+     */
     public void setShowAllVars(boolean showAllVars){
         tcpIp.getGlobalVariablesData().setShowAllVars(showAllVars);
     }
-
+    /**
+     * Getter of the boolean that indicates if the user wants to see all global variables.
+     * @return the boolean that indicates if the user wants to see all global variables.
+     */
     public boolean getShowAllVars(){
         return tcpIp.getGlobalVariablesData().getShowAllVars();
     }

@@ -5,6 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+/**
+ * This class implements the GuidActivity.
+ * @author Enric Lamarca Ferrés.
+ */
 public class GuideActivity extends AppCompatActivity {
 
     private TextView infoText;

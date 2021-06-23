@@ -2,17 +2,41 @@ package com.upc.EasyProduction.DataPackages;
 
 import java.util.Arrays;
 
+/**
+ * This class manages the packages sent when the robot executes a popup command.
+ * @author Enric Lamarca Ferrés
+ */
 public class PopUpData {
-
+    /**
+     * Boolean that indicates if there is a pending popup to notify.
+     */
     private boolean pendingNotification = false;
-
+    /**
+     * Title of the popup.
+     */
     private String title = "";
+    /**
+     * Message text of the popup.
+     */
     private String message = "";
 
+    /**
+     * Boolean that indicates if the popup is a warning.
+     */
     private boolean warning = false;
+    /**
+     * Boolean that indicates if the popup is an error.
+     */
     private boolean error = false;
+    /**
+     * Boolean that indicates if the popup is blocking.
+     */
     private boolean blocking = false;
 
+    /**
+     * Updates the data that contains this class about popup.
+     * @param body data body.
+     */
     public void updateData(byte[] body){
 
         pendingNotification = true;
@@ -32,6 +56,10 @@ public class PopUpData {
 
     }
 
+    /**
+     * Getter of the title.
+     * @return title.
+     */
     public String getTitle(){
         String aux = "";
 
@@ -53,22 +81,47 @@ public class PopUpData {
         return aux;
     }
 
+    /**
+     * Getter of the message.
+     * @return text message.
+     */
     public String getMessage(){
         return message;
     }
+
+    /**
+     * Getter of the boolean that indicates if the popup is a warning.
+     * @return boolean that indicates if the popup is a warning.
+     */
     public boolean getWarning(){
         return warning;
     }
+    /**
+     * Getter of the boolean that indicates if the popup is an error.
+     * @return boolean that indicates if the popup is an error.
+     */
     public boolean getError(){
         return error;
     }
+    /**
+     * Getter of the boolean that indicates if the popup is blocking.
+     * @return boolean that indicates if the popup is blocking.
+     */
     public boolean getBlocking(){
         return blocking;
     }
+
+    /**
+     * Getter of the boolean that indicates if there is a pending popup to notify.
+     * @return boolean that indicates if there is a pending popup to notify.
+     */
     public boolean getPendingNotification(){
         return pendingNotification;
     }
-
+    /**
+     * Setter of the boolean that indicates if there is a pending popup to notify.
+     * @param pendingNotification boolean that indicates if there is a pending popup to notify.
+     */
     public void setPendingNotification(boolean pendingNotification){
         this.pendingNotification = pendingNotification;
     }

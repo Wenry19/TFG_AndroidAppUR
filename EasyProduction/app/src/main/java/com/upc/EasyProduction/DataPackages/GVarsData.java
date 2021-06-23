@@ -7,17 +7,37 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.LinkedList;
 
+/**
+ * This class manages the packages of the global variables of the program that is being executed by the robot.
+ * @author Enric Lamarca Ferrés
+ */
 public class GVarsData {
-
+    /**
+     * List of all global variables names.
+     */
     private LinkedList<String> all_names = new LinkedList<String>();
+    /**
+     * List of all global variables values.
+     */
     private LinkedList<String> all_values = new LinkedList<String>();
+    /**
+     * List of the global variables names entered by the user.
+     */
     private LinkedList<String> names_by_user = new LinkedList<String>();
-
+    /**
+     * Auxiliary List, internal use.
+     */
     private LinkedList<String> aux_values = new LinkedList<String>();
-
+    /**
+     * boolean that indicates if the user wants to see all that variables or only ones introduced.
+     */
     private boolean showAllVars = false;
 
-
+    /**
+     * Decodes the package that contains the global variable names.
+     * @param body body of the package to decode.
+     * @param startIndex used when all global variables names can not be sent with only one package.
+     */
     public void updateDataNames(byte[] body, int startIndex){
         // we have to be sure that all names entered by user are valid variables names
 
@@ -32,6 +52,11 @@ public class GVarsData {
         //Log.d("StartIndexNames", String.valueOf(startIndex)); // test!!
     }
 
+    /**
+     * Decodes the package that contains the global variables values.
+     * @param body body of the package to decode.
+     * @param startIndex used when all global variables values can not be sent with only one package.
+     */
     public void updateDataValues(byte[] body, int startIndex){
 
         //Log.d("StartIndexValues", String.valueOf(startIndex)); // test!!
@@ -137,6 +162,12 @@ public class GVarsData {
     }
 
 
+    /**
+     * Decode a global variable of the type List.
+     * @param body body of the global variables values data.
+     * @param i starting index.
+     * @return a pair indicating in which index terminates and the string representation of the value decoded.
+     */
     private Pair<Integer, String> decodeLists(byte[] body, int i){
 
         // list can be of types: boolean, float, int, pose
@@ -211,6 +242,12 @@ public class GVarsData {
         return new Pair<Integer, String>(i, result);
     }
 
+    /**
+     * Decode a global variable of the type Matrix.
+     * @param body body of the global variables values data.
+     * @param i starting index.
+     * @return a pair indicating in which index terminates and the string representation of the value decoded.
+     */
     private Pair<Integer, String> decodeMatrix(byte[] body, int i){
 
         // it seems that matrices can be of types number-> int, float, num (at least, at the moment)
@@ -278,7 +315,12 @@ public class GVarsData {
         return new Pair<Integer, String>(i, result);
 
     }
-
+    /**
+     * Decode a global variable of the type String.
+     * @param body body of the global variables values data.
+     * @param i starting index.
+     * @return a pair indicating in which index terminates and the string representation of the value decoded.
+     */
     private Pair<Integer, String> decodeString(byte[] body, int i){
         int len = ((body[i] << 8) & 0x0000ff00) | (body[i+1] & 0x000000ff);
         i += 2;
@@ -286,7 +328,12 @@ public class GVarsData {
         i += len;
         return new Pair<Integer, String>(i, result);
     }
-
+    /**
+     * Decode a global variable of the type Pose.
+     * @param body body of the global variables values data.
+     * @param i starting index.
+     * @return a pair indicating in which index terminates and the string representation of the value decoded.
+     */
     private Pair<Integer, String> decodePose(byte[] body, int i){
         String X = String.valueOf(ByteBuffer.wrap(Arrays.copyOfRange(body, i, i + 4)).getFloat());
         i += 4;
@@ -305,6 +352,12 @@ public class GVarsData {
 
         return new Pair<Integer, String>(i, result);
     }
+    /**
+     * Decode a global variable of the type Bool.
+     * @param body body of the global variables values data.
+     * @param i starting index.
+     * @return a pair indicating in which index terminates and the string representation of the value decoded.
+     */
     private Pair<Integer, String> decodeBool(byte[] body, int i){
 
         String result;
@@ -315,6 +368,12 @@ public class GVarsData {
         i += 1;
         return new Pair<Integer, String>(i, result);
     }
+    /**
+     * Decode a global variable of the type Num or Float.
+     * @param body body of the global variables values data.
+     * @param i starting index.
+     * @return a pair indicating in which index terminates and the string representation of the value decoded.
+     */
     private Pair<Integer, String> decodeNumFloat(byte[] body, int i){
 
         String result = String.valueOf(ByteBuffer.wrap(Arrays.copyOfRange(body, i, i + 4)).getFloat());
@@ -322,6 +381,12 @@ public class GVarsData {
 
         return new Pair<Integer, String>(i, result);
     }
+    /**
+     * Decode a global variable of the type Int.
+     * @param body body of the global variables values data.
+     * @param i starting index.
+     * @return a pair indicating in which index terminates and the string representation of the value decoded.
+     */
     private Pair<Integer, String> decodeInt(byte[] body, int i){
 
         String result = String.valueOf(ByteBuffer.wrap(Arrays.copyOfRange(body, i, i + 4)).getInt());
@@ -330,6 +395,10 @@ public class GVarsData {
         return new Pair<Integer, String>(i, result);
     }
 
+    /**
+     * Getter of the global variables names to show.
+     * @return global variables names to show (depending if the user wants to see all of them or only the introduced ones).
+     */
     public String[] getVarsNames(){
         if (!showAllVars) {
             // check if all the names exists
@@ -346,7 +415,10 @@ public class GVarsData {
 
         return all_names.toArray(new String[all_names.size()]);
     }
-
+    /**
+     * Getter of the global variables values to show.
+     * @return global variables values to show (depending if the user wants to see all of them or only the introduced ones).
+     */
     public String[] getVarsValues(){
         if (!showAllVars) {
 
@@ -367,17 +439,34 @@ public class GVarsData {
         return all_values.toArray(new String[all_values.size()]);
     }
 
+    /**
+     * Setter of the boolean that indicates if the user wants to see all variables or only the introduced ones.
+     * @param showAllVars boolean that indicates if the user wants to see all variables or only the introduced ones.
+     */
     public void setShowAllVars(boolean showAllVars){
         this.showAllVars = showAllVars;
     }
 
+    /**
+     * Getter of the boolean that indicates if the user wants to see all variables or only the introduced ones.
+     * @return boolean that indicates if the user wants to see all variables or only the introduced ones.
+     */
     public boolean getShowAllVars(){
         return showAllVars;
     }
 
+    /**
+     * Getter of the global variables names introduced by the user.
+     * @return global variables names introduced by the user.
+     */
     public LinkedList<String> getVarNamesByUser(){
         return names_by_user;
     }
+
+    /**
+     * Setter of the global variables names introduced by the user.
+     * @param names_by_user global variables names introduced by the user.
+     */
     public void setVarNamesByUser(LinkedList<String> names_by_user){
         this.names_by_user = names_by_user;
     }

@@ -1,17 +1,44 @@
 package com.upc.EasyProduction.DataPackages;
 
+/**
+ * This class manages the packages that contain data about the robot mode.
+ * @author Enric Lamarca Ferrés
+ */
 public class RobotModeData extends SubPackage {
-
+    /**
+     * Boolean that indicates if there is an emergency stop.
+     */
     private boolean isEmergencyStopped = false;
+    /**
+     * Boolean that indicates if there is a protective stop.
+     */
     private boolean isProtectiveStopped = false;
 
+    /**
+     * Boolean that indicates if the program is running.
+     */
     private boolean isProgramRunning = false;
+    /**
+     * Boolean that indicates if the program is paused.
+     */
     private boolean isProgramPaused = false;
 
+    /**
+     * Robot mode.
+     */
     private int robotMode = 0;
+    /**
+     * Control mode.
+     */
     private int controlMode = 0;
 
+    /**
+     * String representation of robot mode.
+     */
     private String robotModeStr = "Unknown";
+    /**
+     * String representation of control mode.
+     */
     private String controlModeStr = "Unknown";
 
 
@@ -20,6 +47,9 @@ public class RobotModeData extends SubPackage {
     //private boolean isRealRobotEnabled;
     //private boolean isRobotPowerOn;
 
+    /**
+     * Constructor.
+     */
     public RobotModeData(){
         this.type = 0;
     }
@@ -40,6 +70,9 @@ public class RobotModeData extends SubPackage {
         updateStrings();
     }
 
+    /**
+     * Updates the robot mode string and control mode string.
+     */
     public void updateStrings(){
 
         if (robotMode == -1) robotModeStr = "NO_CONTROLLER";
@@ -62,26 +95,48 @@ public class RobotModeData extends SubPackage {
 
     }
 
+    /**
+     * Getter of the boolean that indicates if there is an emergency stop.
+     * @return boolean that indicates if there is an emergency stop.
+     */
     public boolean getIsEmergencyStopped(){
         return isEmergencyStopped;
     }
-
+    /**
+     * Getter of the boolean that indicates if there is a protective stop.
+     * @return boolean that indicates if there is a protective stop.
+     */
     public boolean getIsProtectiveStopped(){
         return isProtectiveStopped;
     }
 
+    /**
+     * Getter of the boolean that indicates if the program is running.
+     * @return boolean that indicates if the program is running.
+     */
     public boolean getIsProgramRunning(){
         return isProgramRunning;
     }
 
+    /**
+     * Getter of the boolean that indicates if the program is paused.
+     * @return boolean that indicates if the program is paused.
+     */
     public boolean getIsProgramPaused(){
         return isProgramPaused;
     }
 
+    /**
+     * Getter of the string representation of the robot mode.
+     * @return the string representation of the robot mode.
+     */
     public String getRobotModeStr(){
         return robotModeStr;
     }
-
+    /**
+     * Getter of the string representation of the control mode.
+     * @return the string representation of the control mode.
+     */
     public String getControlModeStr(){
         return controlModeStr;
     }

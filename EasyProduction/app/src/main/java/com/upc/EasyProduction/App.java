@@ -7,6 +7,10 @@ import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import android.os.Build;
 
+/**
+ * This class is a subclass of Application and creates the notification channel.
+ * @author Enric Lamarca Ferrés.
+ */
 public class App extends Application {
 
     public static final String CHANNEL_ID = "channel";

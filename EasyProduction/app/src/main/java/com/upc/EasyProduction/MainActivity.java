@@ -14,12 +14,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-
+/**
+ * This class implements the MainActivity.
+ * @author Enric Lamarca Ferrés.
+ */
 public class MainActivity extends AppCompatActivity {
 
+    /**
+     * Instance of the NetworkService.
+     */
     private NetworkService networkService;
+    /**
+     * Boolean that indicates if this activity is bound to NetworkService.
+     */
     private boolean bound = false; // bounded to service?
-
+    /**
+     * Robot IP.
+     */
     private String robotIP;
 
     private Button connectButton;
@@ -154,10 +165,15 @@ public class MainActivity extends AppCompatActivity {
 
     //https://stackoverflow.com/questions/22079909/android-java-lang-illegalargumentexception-service-not-registered
 
+    /**
+     * Bind the NetworkService.
+     */
     public void doBindService() {
         bound = bindService(new Intent(this, NetworkService.class), connection, Context.BIND_AUTO_CREATE);
     }
-
+    /**
+     * Unbind the NetworkService.
+     */
     public void doUnbindService() {
         if (bound) {
             unbindService(connection);
@@ -223,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     // https://stackoverflow.com/questions/600207/how-to-check-if-a-service-is-running-on-android
+
     private boolean isMyServiceRunning(Class<?> serviceClass) { // eye!!
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {

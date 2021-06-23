@@ -16,11 +16,24 @@ import android.widget.TextView;
 
 import com.upc.EasyProduction.DataPackages.GVarsData;
 
+/**
+ * This class implements the GlobalVariablesActivity.
+ * @author Enric Lamarca Ferrés.
+ */
 public class GlobalVariablesActivity extends AppCompatActivity {
 
+    /**
+     * Instance of the NetworkService.
+     */
     private NetworkService networkService;
+    /**
+     * Boolean that indicates if this activity is bound to NetworkService.
+     */
     private boolean bound = false;
 
+    /**
+     * Thread that updates the values.
+     */
     private Thread updatingValuesThread;
 
     private Button addButton;
@@ -30,6 +43,9 @@ public class GlobalVariablesActivity extends AppCompatActivity {
     private TextView varsByUser;
     private Button allVars;
 
+    /**
+     * Boolean that indicates if the user wants to see all global variables.
+     */
     private boolean showAllVars = false;
 
     @Override
@@ -98,10 +114,17 @@ public class GlobalVariablesActivity extends AppCompatActivity {
     }
 
     //https://stackoverflow.com/questions/22079909/android-java-lang-illegalargumentexception-service-not-registered
+
+    /**
+     * Bind the NetworkService.
+     */
     public void doBindService() {
         bound = bindService(new Intent(this, NetworkService.class), connection, Context.BIND_AUTO_CREATE);
     }
 
+    /**
+     * Unbind the NetworkService.
+     */
     public void doUnbindService() {
         if (bound) {
             unbindService(connection);
@@ -179,6 +202,9 @@ public class GlobalVariablesActivity extends AppCompatActivity {
         vars.scrollTo(0, 0);
     }
 
+    /**
+     * Starts updating values.
+     */
     private void startUpdatingValues() {
         // make sure that we are bound
 

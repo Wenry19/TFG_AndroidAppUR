@@ -5,6 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+/**
+ * This class implements the AboutActivity.
+ * @author Enric Lamarca Ferrés.
+ */
 public class AboutActivity extends AppCompatActivity {
 
     private TextView aboutText;
@@ -26,6 +30,5 @@ public class AboutActivity extends AppCompatActivity {
                 "Implemented for a CB3-series robot\n" +
                 "of Universal Robots\n" +
                 "with URSoftware version 3.14");
-
     }
 }

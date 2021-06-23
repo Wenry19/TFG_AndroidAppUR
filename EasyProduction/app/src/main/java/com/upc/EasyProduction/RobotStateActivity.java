@@ -20,12 +20,28 @@ import com.upc.EasyProduction.DataPackages.MasterBoardData;
 import com.upc.EasyProduction.DataPackages.RobotModeData;
 import com.upc.EasyProduction.DataPackages.ToolData;
 
+/**
+ * This class implements RobotStateActivity.
+ * @author Enric Lamarca Ferrés.
+ */
 public class RobotStateActivity extends AppCompatActivity {
 
+    /**
+     * Instance of the NetworkService.
+     */
     private NetworkService networkService;
+    /**
+     * Boolean that indicates if this activity is bound to NetworkService.
+     */
     private boolean bound = false; // bounded to service?
 
+    /**
+     * Instance of DashBoardConnection.
+     */
     private DashBoardConnection db;
+    /**
+     * Robot IP.
+     */
     private String robotIP;
 
     private Button playButton;
@@ -49,6 +65,9 @@ public class RobotStateActivity extends AppCompatActivity {
     private TextView tool;
     private TextView master_board;
 
+    /**
+     * Thread that updates the values.
+     */
     private Thread updatingValuesThread;
 
     @Override
@@ -100,10 +119,15 @@ public class RobotStateActivity extends AppCompatActivity {
     }
 
     //https://stackoverflow.com/questions/22079909/android-java-lang-illegalargumentexception-service-not-registered
+    /**
+     * Bind the NetworkService.
+     */
     public void doBindService() {
         bound = bindService(new Intent(this, NetworkService.class), connection, Context.BIND_AUTO_CREATE);
     }
-
+    /**
+     * Unbind the NetworkService.
+     */
     public void doUnbindService() {
         if (bound) {
             unbindService(connection);
@@ -165,6 +189,9 @@ public class RobotStateActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+    /**
+     * Starts updating values.
+     */
     private void startUpdatingValues(){
         // make sure that we are bound
 
