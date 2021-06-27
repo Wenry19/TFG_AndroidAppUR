@@ -75,13 +75,13 @@ public class RobotStateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_robot_state);
 
-        Intent i = getIntent();
+        /*Intent i = getIntent();
         robotIP = i.getStringExtra("ip");
-        db = new DashBoardConnection(robotIP);
+        db = new DashBoardConnection(robotIP);*/
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
 
         // bind to NetworkService
@@ -95,7 +95,7 @@ public class RobotStateActivity extends AppCompatActivity {
 
         programState = findViewById(R.id.program_state);
         emergProtStop = findViewById(R.id.stopped);
-        oldColors =  emergProtStop.getTextColors();
+        oldColors = emergProtStop.getTextColors();
 
         robotMode = findViewById(R.id.robot_mode);
         controlMode = findViewById(R.id.control_mode);
@@ -110,6 +110,15 @@ public class RobotStateActivity extends AppCompatActivity {
         master_board = findViewById(R.id.master_board);
 
         startUpdatingValues();
+
+        (new Thread() {
+            @Override
+            public void run() {
+                while (networkService == null) ;
+
+                db = new DashBoardConnection(networkService.getIP());
+            }
+        }).start();
     }
 
     @Override
